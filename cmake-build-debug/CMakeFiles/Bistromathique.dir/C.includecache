@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/bistromathique.h
+
+/Users/nicolas/Documents/Epitech/Bistromathique/eval_expr.c
+stdlib.h
+-
+bistromathique.h
+/Users/nicolas/Documents/Epitech/Bistromathique/bistromathique.h
+
+/Users/nicolas/Documents/Epitech/Bistromathique/infinite_add.c
+stdlib.h
+-
+bistromathique.h
+/Users/nicolas/Documents/Epitech/Bistromathique/bistromathique.h
+
