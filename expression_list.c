@@ -11,7 +11,10 @@ int pop_expression_from_list(t_expression_list **list)
     t_expression_list *save = *list;
 
     if (*list == NULL)
+    {
+        my_putstr(SYNTAXE_ERROR_MSG);
         return -1;
+    }
     *list = (*list)->next;
     free(save);
     return 0;
@@ -21,7 +24,7 @@ int empty_expression_list(t_expression_list **list)
 {
     while (*list != NULL)
     {
-        free_expression(&(*list)->expression);
+        free_expression(&(*list)->expression_root);
         if (pop_expression_from_list(list) == -1)
             return -1;
     }
@@ -34,15 +37,15 @@ int merge_expressions(t_expression_list **list)
 
     if (super_expression == NULL)
         return -1;
-    if (super_expression->expression->first == NULL || super_expression->expression->second == NULL)
-        super_expression->expression = (*list)->expression;
+    if (super_expression->expression_root->first == NULL || super_expression->expression_root->second == NULL)
+        super_expression->expression_root = (*list)->expression_root;
     else
-        super_expression->expression->second = (*list)->expression;
+        super_expression->expression_root->second = (*list)->expression_root;
     pop_expression_from_list(list);
     return 0;
 }
 
-int add_expression_to_list(t_expression_list **list, t_expression *expression)
+int add_expression_to_list(t_expression_list **list, t_expression_tree *expression_root)
 {
     t_expression_list *new_element;
 
@@ -51,7 +54,7 @@ int add_expression_to_list(t_expression_list **list, t_expression *expression)
         my_putstr(MALLOC_ERROR);
         return -1;
     }
-    new_element->expression = expression;
+    new_element->expression_root = expression_root;
     new_element->next = *list;
     *list = new_element;
     return 0;
@@ -59,20 +62,20 @@ int add_expression_to_list(t_expression_list **list, t_expression *expression)
 
 int init_expression_in_list(t_expression_list **list)
 {
-    t_expression *expression = NULL;
+    t_expression_tree *expression_root = NULL;
 
-    if ((expression = malloc(sizeof(*expression))) == NULL)
+    if ((expression_root = malloc(sizeof(*expression_root))) == NULL)
     {
         my_putstr(MALLOC_ERROR);
         return -1;
     }
-    expression->first = NULL;
-    expression->second = NULL;
-    expression->operator = 0;
-    expression->result = NULL;
-    if (add_expression_to_list(list, expression) == -1)
+    expression_root->first = NULL;
+    expression_root->second = NULL;
+    expression_root->operator = 0;
+    expression_root->result = NULL;
+    if (add_expression_to_list(list, expression_root) == -1)
     {
-        free(expression);
+        free(expression_root);
         empty_expression_list(list);
         return -1;
     }

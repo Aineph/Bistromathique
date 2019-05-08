@@ -22,12 +22,12 @@
 # define OP_MULT_IDX 4
 # define OP_DIV_IDX 5
 # define OP_MOD_IDX 6
-# define SYNTAXE_ERROR_MSG "syntax error\n"
 
 /*
  * Errors
  */
 
+# define SYNTAXE_ERROR_MSG "syntax error\n"
 # define READ_ERROR "could not read\n"
 # define MALLOC_ERROR "could not alloc\n"
 # define OPS_ERROR "Bad ops\n"
@@ -41,44 +41,44 @@ typedef struct s_bistromathique
     unsigned int size;
 } t_bistromathique;
 
-typedef struct s_operation
+typedef char *(*t_operation)(t_bistromathique, char *, char *);
+
+typedef struct s_operation_list
 {
     char operator;
+    t_operation operation;
+    struct s_operation_list *next;
+} t_operation_list;
 
-    char *(*operation)(t_bistromathique, char *, char *);
-
-    struct s_operation *next;
-} t_operation;
-
-typedef struct s_expression
+typedef struct s_expression_tree
 {
-    struct s_expression *first;
-    struct s_expression *second;
+    struct s_expression_tree *first;
+    struct s_expression_tree *second;
     char operator;
     char *result;
-} t_expression;
+} t_expression_tree;
 
 typedef struct s_expression_list
 {
-    t_expression *expression;
+    t_expression_tree *expression_root;
     struct s_expression_list *next;
 } t_expression_list;
 
-void print_expr(t_expression *);
+void print_expr(t_expression_tree *);
 
 /*
  * expression.c
  */
 
-void free_expression(t_expression **);
+void free_expression(t_expression_tree **);
 
-t_expression *parse_left_value(t_bistromathique, int);
+t_expression_tree *parse_left_value(t_bistromathique, int, int);
 
-t_expression *parse_right_value(t_bistromathique, int);
+t_expression_tree *parse_right_value(t_bistromathique, int);
 
-int update_root_expression(t_bistromathique, t_expression **, t_expression *);
+int update_root_expression(t_bistromathique, t_expression_tree **, t_expression_tree *);
 
-t_expression *create_expression(t_bistromathique, int);
+t_expression_tree *create_expression(t_bistromathique, int, int);
 
 /*
  * expression_list.c
@@ -90,25 +90,25 @@ int empty_expression_list(t_expression_list **);
 
 int merge_expressions(t_expression_list **);
 
-int add_expression_to_list(t_expression_list **, t_expression *);
+int add_expression_to_list(t_expression_list **, t_expression_tree *);
 
 int init_expression_in_list(t_expression_list **);
 
 /*
- * operations.c
+ * operation_list.c
  */
 
-void free_operations(t_operation *);
+void free_operation_list(t_operation_list *);
 
-int add_operation(t_operation **, char, char *(*)(t_bistromathique, char *, char *));
+int add_operation_in_list(t_operation_list **, char, t_operation);
 
-t_operation *init_operations(t_bistromathique);
+t_operation_list *init_operation_list(t_bistromathique);
 
 /*
  * compute.c
  */
 
-char *compute(t_bistromathique, t_operation *, t_expression *);
+char *compute(t_bistromathique, t_operation_list *, t_expression_tree *);
 
 /*
  * infinite_add.c
@@ -138,17 +138,15 @@ int is_negative(t_bistromathique, const char *);
 
 int is_higher(t_bistromathique, char *, char *);
 
+char *str_prepend(char *, char);
+
 /*
  * parsing_helpers.c
  */
 
-char *concat_before(char *, char);
+int is_priority_operator(t_bistromathique, char);
 
-char *concat_after(char *, char);
-
-int is_priority_operator(char *, char);
-
-int is_operator(char *, char);
+int is_operator(t_bistromathique, char);
 
 /*
  * eval_expr.c

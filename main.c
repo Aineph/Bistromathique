@@ -34,6 +34,8 @@ static void check_ops(char *ops)
 static char *get_expr(unsigned int size)
 {
     char *expr;
+    ssize_t read_size = 0;
+    ssize_t tmp_size = 0;
 
     if (size <= 0)
     {
@@ -45,7 +47,9 @@ static char *get_expr(unsigned int size)
         my_putstr(MALLOC_ERROR);
         exit(3);
     }
-    if (read(0, expr, size) != size)
+    while ((read_size = read(0, &expr[tmp_size], size)) > 0)
+        tmp_size += read_size;
+    if (tmp_size < size)
     {
         my_putstr(READ_ERROR);
         exit(4);

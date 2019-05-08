@@ -3,6 +3,7 @@
  * Started on 08/05/2019.
  */
 
+#include <stdlib.h>
 #include "bistromathique.h"
 
 int is_negative(t_bistromathique bistromathique, const char *number)
@@ -41,4 +42,28 @@ int is_higher(t_bistromathique bistromathique, char *nb_a, char *nb_b)
         i += 1;
     }
     return 0;
+}
+
+char *str_prepend(char *source, char c)
+{
+    char *result = NULL;
+    int source_length = my_strlen(source);
+    int result_length = source_length + 1;
+    int i = 0;
+
+    if ((result = malloc(sizeof(*result) * result_length + 1)) == NULL)
+    {
+        my_putstr(MALLOC_ERROR);
+        return NULL;
+    }
+    result[0] = c;
+    while (i < source_length)
+    {
+        result[i + 1] = source[i];
+        i += 1;
+    }
+    result[i + 1] = '\0';
+    if (source != NULL)
+        free(source);
+    return result;
 }

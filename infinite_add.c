@@ -37,7 +37,7 @@ char *simple_add(t_bistromathique bistromathique, char *nb_a, char *nb_b)
         position += 1;
     }
     if (ret != bistromathique.base[0])
-        result = concat_before(result, ret);
+        result = str_prepend(result, ret);
     return result;
 }
 
@@ -47,6 +47,6 @@ char *infinite_add(t_bistromathique bistromathique, char *nb_a, char *nb_b)
 
     result = simple_add(bistromathique, nb_a, nb_b);
     if (is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b))
-        result = concat_before(result, bistromathique.ops[OP_NEG_IDX]);
+        result = str_prepend(result, bistromathique.ops[OP_NEG_IDX]);
     return result;
 }
