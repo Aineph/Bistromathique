@@ -41,7 +41,13 @@ typedef struct s_bistromathique
     unsigned int size;
 } t_bistromathique;
 
-typedef char *(*t_operation)(t_bistromathique, char *, char *);
+typedef struct s_number
+{
+    char *value;
+    int size;
+} t_number;
+
+typedef t_number (*t_operation)(t_bistromathique, t_number, t_number);
 
 typedef struct s_operation_list
 {
@@ -55,7 +61,7 @@ typedef struct s_expression_tree
     struct s_expression_tree *first;
     struct s_expression_tree *second;
     char operator;
-    char *result;
+    t_number result;
 } t_expression_tree;
 
 typedef struct s_expression_list
@@ -108,13 +114,13 @@ t_operation_list *init_operation_list(t_bistromathique);
  * compute.c
  */
 
-char *compute(t_bistromathique, t_operation_list *, t_expression_tree *);
+t_number compute(t_bistromathique, t_operation_list *, t_expression_tree *);
 
 /*
  * infinite_add.c
  */
 
-char *infinite_add(t_bistromathique, char *, char *);
+t_number infinite_add(t_bistromathique, t_number, t_number);
 
 /*
  * helpers.c
@@ -134,9 +140,9 @@ int get_value(t_bistromathique, char);
  * compute_helpers.c
  */
 
-int is_negative(t_bistromathique, const char *);
+int is_negative(t_bistromathique, t_number);
 
-int is_higher(t_bistromathique, char *, char *);
+int is_higher(t_bistromathique, t_number, t_number);
 
 char *str_prepend(char *, char);
 

@@ -72,7 +72,8 @@ int init_expression_in_list(t_expression_list **list)
     expression_root->first = NULL;
     expression_root->second = NULL;
     expression_root->operator = 0;
-    expression_root->result = NULL;
+    expression_root->result.value = NULL;
+    expression_root->result.size = 0;
     if (add_expression_to_list(list, expression_root) == -1)
     {
         free(expression_root);

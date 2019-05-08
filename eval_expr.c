@@ -45,9 +45,9 @@ t_expression_tree *parse_expr(t_bistromathique bistromathique)
 
 void print_expr(t_expression_tree *expression_node)
 {
-    if (expression_node->result != NULL)
+    if (expression_node->result.value != NULL)
     {
-        printf("Value: %s\n", expression_node->result);
+        printf("Value: %s\n", expression_node->result.value);
         return;
     }
     if (expression_node->first != NULL)
@@ -74,5 +74,5 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
         free_operation_list(operation_list);
         return NULL;
     };
-    return compute(bistromathique, operation_list, expression_root);
+    return compute(bistromathique, operation_list, expression_root).value;
 }

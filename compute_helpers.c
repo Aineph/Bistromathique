@@ -6,17 +6,17 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-int is_negative(t_bistromathique bistromathique, const char *number)
+int is_negative(t_bistromathique bistromathique, t_number number)
 {
-    if (number[0] == bistromathique.ops[OP_NEG_IDX])
+    if (number.value[0] == bistromathique.ops[OP_NEG_IDX])
         return 1;
     return 0;
 }
 
-int is_higher(t_bistromathique bistromathique, char *nb_a, char *nb_b)
+int is_higher(t_bistromathique bistromathique, t_number nb_a, t_number nb_b)
 {
-    int len1 = my_strlen(nb_a);
-    int len2 = my_strlen(nb_b);
+    int len1 = nb_a.size;
+    int len2 = nb_b.size;
     int i = 0;
 
     if ((!is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b)) ||
@@ -30,14 +30,14 @@ int is_higher(t_bistromathique bistromathique, char *nb_a, char *nb_b)
     while (i < len1)
     {
         if ((is_negative(bistromathique, nb_a) &&
-             get_value(bistromathique, nb_a[i]) < get_value(bistromathique, nb_b[i])) ||
+             get_value(bistromathique, nb_a.value[i]) < get_value(bistromathique, nb_b.value[i])) ||
             (!is_negative(bistromathique, nb_a) &&
-             get_value(bistromathique, nb_a[i]) > get_value(bistromathique, nb_b[i])))
+             get_value(bistromathique, nb_a.value[i]) > get_value(bistromathique, nb_b.value[i])))
             return 1;
         else if ((is_negative(bistromathique, nb_a) &&
-                  get_value(bistromathique, nb_a[i]) > get_value(bistromathique, nb_b[i])) ||
+                  get_value(bistromathique, nb_a.value[i]) > get_value(bistromathique, nb_b.value[i])) ||
                  (!is_negative(bistromathique, nb_a) &&
-                  get_value(bistromathique, nb_a[i]) < get_value(bistromathique, nb_b[i])))
+                  get_value(bistromathique, nb_a.value[i]) < get_value(bistromathique, nb_b.value[i])))
             return 0;
         i += 1;
     }

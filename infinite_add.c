@@ -6,47 +6,51 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-char *simple_add(t_bistromathique bistromathique, char *nb_a, char *nb_b)
+t_number simple_add(t_bistromathique bistromathique, t_number nb_a, t_number nb_b)
 {
-    char *result = NULL;
+    t_number result = {NULL, 0};
     int base_length = my_strlen(bistromathique.base);
     char ret = bistromathique.base[0];
     int tmp_result = 0;
-    int nb_a_length = my_strlen(nb_a);
-    int nb_b_length = my_strlen(nb_b);
     int position = 1;
     int offset = 0;
 
     if (is_higher(bistromathique, nb_a, nb_b))
-        offset = nb_a_length;
+        offset = nb_a.size;
     else
-        offset = nb_b_length;
-    if ((result = malloc((sizeof(*result) * offset) + 1)) == NULL)
+        offset = nb_b.size;
+    result.size = offset;
+    if ((result.value = malloc((sizeof(*result.value) * offset) + 1)) == NULL)
+    {
+        my_putstr(MALLOC_ERROR);
         return result;
-    result[offset--] = '\0';
-    while (nb_a_length - position >= 0 || nb_b_length - position >= 0)
+    }
+    result.value[offset--] = '\0';
+    while (nb_a.size - position >= 0 || nb_b.size - position >= 0)
     {
         tmp_result = 0;
-        if (nb_a_length - position >= 0)
-            tmp_result += get_value(bistromathique, nb_a[nb_a_length - position]);
-        if (nb_b_length - position >= 0)
-            tmp_result += get_value(bistromathique, nb_b[nb_b_length - position]);
+        if (nb_a.size - position >= 0)
+            tmp_result += get_value(bistromathique, nb_a.value[nb_a.size - position]);
+        if (nb_b.size - position >= 0)
+            tmp_result += get_value(bistromathique, nb_b.value[nb_b.size - position]);
         tmp_result += get_value(bistromathique, ret);
         ret = bistromathique.base[tmp_result / base_length];
-        result[offset--] = bistromathique.base[tmp_result % base_length];
+        result.value[offset--] = bistromathique.base[tmp_result % base_length];
         position += 1;
     }
     if (ret != bistromathique.base[0])
-        result = str_prepend(result, ret);
+    {
+        result.value = str_prepend(result.value, ret);
+        result.size += 1;
+    }
     return result;
 }
 
-char *infinite_add(t_bistromathique bistromathique, char *nb_a, char *nb_b)
+t_number infinite_add(t_bistromathique bistromathique, t_number nb_a, t_number nb_b)
 {
-    char *result = NULL;
+    t_number result = simple_add(bistromathique, nb_a, nb_b);
 
-    result = simple_add(bistromathique, nb_a, nb_b);
     if (is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b))
-        result = str_prepend(result, bistromathique.ops[OP_NEG_IDX]);
+        result.value = str_prepend(result.value, bistromathique.ops[OP_NEG_IDX]);
     return result;
 }
