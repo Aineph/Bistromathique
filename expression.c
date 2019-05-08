@@ -30,6 +30,7 @@ t_expression *parse_left_value(t_bistromathique bistromathique, int position)
     t_expression *left_expression = NULL;
     char *result = NULL;
     int i = position - 1;
+    int size = 0;
 
     if ((left_expression = malloc(sizeof(*left_expression))) == NULL)
     {
@@ -38,9 +39,18 @@ t_expression *parse_left_value(t_bistromathique bistromathique, int position)
     }
     while (i >= 0 && !is_operator(bistromathique.ops, bistromathique.expr[i]))
     {
-        result = concat_before(result, bistromathique.expr[i]);
+        size += 1;
         i -= 1;
     }
+    if ((result = malloc(sizeof(*result) * (size + 1))) == NULL)
+    {
+        free(left_expression);
+        my_putstr(MALLOC_ERROR);
+        return NULL;
+    }
+    result[size] = '\0';
+    while (i++ < position - 1)
+        result[size - (position - i)] = bistromathique.expr[i];
     left_expression->first = NULL;
     left_expression->second = NULL;
     left_expression->operator = 0;
@@ -53,6 +63,7 @@ t_expression *parse_right_value(t_bistromathique bistromathique, int position)
     t_expression *left_expression = NULL;
     char *result = NULL;
     int i = position + 1;
+    int size = 0;
 
     if ((left_expression = malloc(sizeof(*left_expression))) == NULL)
     {
@@ -61,9 +72,18 @@ t_expression *parse_right_value(t_bistromathique bistromathique, int position)
     }
     while (i < bistromathique.size && !is_operator(bistromathique.ops, bistromathique.expr[i]))
     {
-        result = concat_after(result, bistromathique.expr[i]);
+        size += 1;
         i += 1;
     }
+    if ((result = malloc(sizeof(*result) * (size + 1))) == NULL)
+    {
+        free(left_expression);
+        my_putstr(MALLOC_ERROR);
+        return NULL;
+    }
+    result[size] = '\0';
+    while (i-- > position + 1)
+        result[i - (position + 1)] = bistromathique.expr[i];
     left_expression->first = NULL;
     left_expression->second = NULL;
     left_expression->operator = 0;

@@ -41,9 +41,12 @@ typedef struct s_bistromathique
     unsigned int size;
 } t_bistromathique;
 
-typedef struct s_operation {
+typedef struct s_operation
+{
     char operator;
+
     char *(*operation)(t_bistromathique, char *, char *);
+
     struct s_operation *next;
 } t_operation;
 
@@ -126,6 +129,14 @@ int my_strlen(const char *);
 int my_atoi(char *);
 
 int get_value(t_bistromathique, char);
+
+/*
+ * compute_helpers.c
+ */
+
+int is_negative(t_bistromathique, const char *);
+
+int is_higher(t_bistromathique, char *, char *);
 
 /*
  * parsing_helpers.c
