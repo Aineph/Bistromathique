@@ -15,19 +15,17 @@ int is_negative(t_bistromathique bistromathique, t_number number)
 
 int is_higher(t_bistromathique bistromathique, t_number nb_a, t_number nb_b)
 {
-    int len1 = nb_a.size;
-    int len2 = nb_b.size;
     int i = 0;
 
     if ((!is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b)) ||
-        (is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b) && len2 > len1) ||
-        (!is_negative(bistromathique, nb_a) && !is_negative(bistromathique, nb_b) && len1 > len2))
+        (is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b) && nb_b.size > nb_a.size) ||
+        (!is_negative(bistromathique, nb_a) && !is_negative(bistromathique, nb_b) && nb_a.size > nb_b.size))
         return 1;
     else if ((is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b)) ||
-             (is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b) && len2 < len1) ||
-             (!is_negative(bistromathique, nb_a) && !is_negative(bistromathique, nb_b) && len1 < len2))
+             (is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b) && nb_b.size < nb_a.size) ||
+             (!is_negative(bistromathique, nb_a) && !is_negative(bistromathique, nb_b) && nb_a.size < nb_b.size))
         return 0;
-    while (i < len1)
+    while (i < nb_a.size)
     {
         if ((is_negative(bistromathique, nb_a) &&
              get_value(bistromathique, nb_a.value[i]) < get_value(bistromathique, nb_b.value[i])) ||

@@ -9,8 +9,8 @@
 t_number compute(t_bistromathique bistromathique, t_operation_list *operation_list, t_expression_tree *expression_node)
 {
     t_operation_list *operation_tmp = operation_list;
-    t_number nb_a = {NULL, 0};
-    t_number nb_b = {NULL, 0};
+    t_number nb_a = create_number();
+    t_number nb_b = create_number();
 
     if (expression_node->result.value != NULL)
         return expression_node->result;
@@ -29,5 +29,5 @@ t_number compute(t_bistromathique bistromathique, t_operation_list *operation_li
         }
         operation_tmp = operation_tmp->next;
     }
-    return nb_a;
+    return expression_node->result;
 }

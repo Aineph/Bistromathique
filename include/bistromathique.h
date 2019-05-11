@@ -36,6 +36,7 @@
 typedef struct s_bistromathique
 {
     char *base;
+    int base_length;
     char *ops;
     char *expr;
     unsigned int size;
@@ -111,6 +112,20 @@ int add_operation_in_list(t_operation_list **, char, t_operation);
 t_operation_list *init_operation_list(t_bistromathique);
 
 /*
+ * number.c
+ */
+
+t_number destroy_number(t_number);
+
+t_number number_to_positive(t_bistromathique, t_number);
+
+t_number number_to_negative(t_bistromathique, t_number);
+
+t_number assign_value_to_number(char *, int);
+
+t_number create_number(void);
+
+/*
  * compute.c
  */
 
@@ -120,7 +135,17 @@ t_number compute(t_bistromathique, t_operation_list *, t_expression_tree *);
  * infinite_add.c
  */
 
+t_number simple_add(t_bistromathique, t_number, t_number);
+
 t_number infinite_add(t_bistromathique, t_number, t_number);
+
+/*
+ * infinite_sub.c
+ */
+
+t_number simple_sub(t_bistromathique, t_number, t_number);
+
+t_number infinite_sub(t_bistromathique, t_number, t_number);
 
 /*
  * helpers.c

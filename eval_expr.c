@@ -64,6 +64,7 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
     t_operation_list *operation_list = NULL;
 
     bistromathique.base = base;
+    bistromathique.base_length = my_strlen(base);
     bistromathique.ops = ops;
     bistromathique.expr = expr;
     bistromathique.size = size;
