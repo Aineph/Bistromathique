@@ -14,13 +14,13 @@ void empty_number_list(t_number_list *number_list)
     while (number_tmp != NULL)
     {
         number_save = number_tmp->next;
-        destroy_number(number_tmp->number);
+        free_number(number_tmp->number);
         free(number_tmp);
         number_tmp = number_save;
     }
 }
 
-int add_number_to_list(t_number_list **list, t_number number)
+int add_number_to_list(t_number_list **list, t_number *number)
 {
     t_number_list *new_element;
 

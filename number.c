@@ -6,75 +6,62 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-t_number destroy_number(t_number number)
+void free_number(t_number *number)
 {
-    if (number.value != NULL)
-        free(number.value);
-    number.value = NULL;
-    return number;
+    if (number->value != NULL)
+        free(number->value);
+    free(number);
 }
 
-t_number number_to_positive(t_bistromathique bistromathique, t_number number)
+int number_to_positive(t_bistromathique bistromathique, t_number *number)
 {
-    t_number positive_number = create_number();
-    int index = 1;
+    int number_size = number->size;
 
-    if (!is_negative(bistromathique, number) || number.value == NULL)
-        return number;
-    if ((positive_number.value = malloc(sizeof(*positive_number.value) * (positive_number.size + 1))) == NULL)
-        return positive_number;
-    positive_number.size = number.size - 1;
-    while (index < number.size)
+    if (number->value != NULL && is_negative(bistromathique, number))
     {
-        positive_number.value[index - 1] = number.value[index];
-        index += 1;
+        number->size = 0;
+        if ((number->value = str_slice(number->value, 1, number_size)) == NULL)
+            return -1;
     }
-    positive_number.value[index - 1] = '\0';
-    free(number.value);
-    return positive_number;
+    number->size = number_size - 1;
+    return 0;
 }
 
-t_number number_to_negative(t_bistromathique bistromathique, t_number number)
+int number_to_negative(t_bistromathique bistromathique, t_number *number)
 {
-    t_number negative_number = create_number();
+    int number_size = number->size;
 
-    if (is_negative(bistromathique, number) || number.value == NULL)
-        return number;
-    if ((negative_number.value = str_prepend(number.value, '-')) == NULL)
-        return negative_number;
-    negative_number.size = number.size + 1;
-    return negative_number;
-}
-
-t_number assign_value_to_number(char *value, int size)
-{
-    t_number number;
-    int index = 0;
-
-    number.size = 0;
-    if (value != NULL)
+    if (number->value != NULL && !is_negative(bistromathique, number))
     {
-        if ((number.value = malloc(sizeof(*number.value) * (size + 1))) == NULL)
-            number.value = NULL;
-        else
-        {
-            while (index < size)
-            {
-                number.value[index] = value[index];
-                index += 1;
-            }
-            number.value[index] = '\0';
-            number.size = size;
-        }
+        number->size = 0;
+        if ((number->value = str_prepend(number->value, '-', number_size)) == NULL)
+            return -1;
     }
-    return number;
+    number->size = number_size + 1;
+    return 0;
 }
 
-t_number create_number(void)
+int assign_value_to_number(t_number *number, char *value, int size)
 {
-    t_number number;
+    if (number->value != NULL)
+        free(number->value);
+    number->size = 0;
+    if ((number->value = str_copy(value, size)) == NULL)
+        return -1;
+    number->size = size;
+    return 0;
+}
 
-    number.value = NULL;
-    number.size = 0;
+t_number *create_number(void)
+{
+    t_number *number = NULL;
+
+    if ((number = malloc(sizeof(*number))) == NULL)
+    {
+        my_putstr(MALLOC_ERROR);
+        return NULL;
+    }
+    number->value = NULL;
+    number->size = 0;
     return number;
 }

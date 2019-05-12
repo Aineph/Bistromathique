@@ -50,11 +50,11 @@ typedef struct s_number
 
 typedef struct s_number_list
 {
-    t_number number;
+    t_number *number;
     struct s_number_list *next;
 } t_number_list;
 
-typedef t_number (*t_operation)(t_bistromathique, t_number, t_number);
+typedef t_number *(*t_operation)(t_bistromathique, t_number *, t_number *);
 
 typedef struct s_operation_list
 {
@@ -68,7 +68,7 @@ typedef struct s_expression_tree
     struct s_expression_tree *first;
     struct s_expression_tree *second;
     char operator;
-    t_number result;
+    t_number *result;
 } t_expression_tree;
 
 typedef struct s_expression_list
@@ -121,15 +121,15 @@ t_operation_list *init_operation_list(t_bistromathique);
  * number.c
  */
 
-t_number destroy_number(t_number);
+void free_number(t_number *);
 
-t_number number_to_positive(t_bistromathique, t_number);
+int number_to_positive(t_bistromathique, t_number *);
 
-t_number number_to_negative(t_bistromathique, t_number);
+int number_to_negative(t_bistromathique, t_number *);
 
-t_number assign_value_to_number(char *, int);
+int assign_value_to_number(t_number *, char *, int);
 
-t_number create_number(void);
+t_number *create_number(void);
 
 /*
  * number_list.c
@@ -137,37 +137,39 @@ t_number create_number(void);
 
 void empty_number_list(t_number_list *);
 
-int add_number_to_list(t_number_list **, t_number);
+int add_number_to_list(t_number_list **, t_number *);
 
 /*
  * compute.c
  */
 
-t_number compute(t_bistromathique, t_operation_list *, t_expression_tree *);
+t_number *compute(t_bistromathique, t_operation_list *, t_expression_tree **);
+
+//t_number compute(t_bistromathique, t_operation_list *, t_expression_tree *);
 
 /*
  * infinite_add.c
  */
 
-t_number simple_add(t_bistromathique, t_number, t_number);
+t_number *simple_add(t_bistromathique, t_number *, t_number *);
 
-t_number infinite_add(t_bistromathique, t_number, t_number);
+t_number *infinite_add(t_bistromathique, t_number *, t_number *);
 
 /*
  * infinite_sub.c
  */
 
-t_number simple_sub(t_bistromathique, t_number, t_number);
+t_number *simple_sub(t_bistromathique, t_number *, t_number *);
 
-t_number infinite_sub(t_bistromathique, t_number, t_number);
+t_number *infinite_sub(t_bistromathique, t_number *, t_number *);
 
 /*
  * infinite_mul.c
  */
 
-t_number simple_mul(t_bistromathique, t_number, t_number);
+t_number *simple_mul(t_bistromathique, t_number *, t_number *);
 
-t_number infinite_mul(t_bistromathique, t_number, t_number);
+t_number *infinite_mul(t_bistromathique, t_number *, t_number *);
 
 /*
  * helpers.c
@@ -187,11 +189,15 @@ int get_value(t_bistromathique, char);
  * compute_helpers.c
  */
 
-int is_negative(t_bistromathique, t_number);
+int is_negative(t_bistromathique, t_number *);
 
-int is_higher(t_bistromathique, t_number, t_number);
+int is_higher(t_bistromathique, t_number *, t_number *);
 
-char *str_prepend(char *, char);
+char *str_copy(const char *, int);
+
+char *str_prepend(char *, char, int);
+
+char *str_slice(char *, int, int);
 
 /*
  * parsing_helpers.c
