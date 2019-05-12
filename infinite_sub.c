@@ -65,9 +65,9 @@ t_number simple_sub(t_bistromathique bistromathique, t_number nb_a, t_number nb_
     if (nb_a.value == NULL)
         return number_to_negative(bistromathique, nb_b);
     if (nb_b.value == NULL)
-        return nb_a;
+        return assign_value_to_number(nb_a.value, nb_a.size);
     result.size = nb_a.size;
-    if ((result.value = malloc((sizeof(*result.value) * result.size) + 1)) == NULL)
+    if ((result.value = malloc(sizeof(*result.value) * (result.size + 1))) == NULL)
     {
         my_putstr(MALLOC_ERROR);
         result.size = 0;

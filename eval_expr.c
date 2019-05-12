@@ -72,7 +72,7 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
         return NULL;
     if ((expression_root = parse_expr(bistromathique)) == NULL)
     {
-        free_operation_list(operation_list);
+        empty_operation_list(operation_list);
         return NULL;
     };
     return compute(bistromathique, operation_list, expression_root).value;

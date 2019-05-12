@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-void free_operation_list(t_operation_list *operation_list)
+void empty_operation_list(t_operation_list *operation_list)
 {
     t_operation_list *operation_tmp = operation_list;
     t_operation_list *operation_save;
@@ -40,22 +40,22 @@ t_operation_list *init_operation_list(t_bistromathique bistromathique)
         return NULL;
     if (add_operation_in_list(&operation_list, bistromathique.ops[OP_SUB_IDX], &infinite_sub) == -1)
     {
-        free_operation_list(operation_list);
+        empty_operation_list(operation_list);
         return NULL;
     }
-    if (add_operation_in_list(&operation_list, bistromathique.ops[OP_MULT_IDX], &infinite_add) == -1)
+    if (add_operation_in_list(&operation_list, bistromathique.ops[OP_MULT_IDX], &infinite_mul) == -1)
     {
-        free_operation_list(operation_list);
+        empty_operation_list(operation_list);
         return NULL;
     }
     if (add_operation_in_list(&operation_list, bistromathique.ops[OP_DIV_IDX], &infinite_add) == -1)
     {
-        free_operation_list(operation_list);
+        empty_operation_list(operation_list);
         return NULL;
     }
     if (add_operation_in_list(&operation_list, bistromathique.ops[OP_MOD_IDX], &infinite_add) == -1)
     {
-        free_operation_list(operation_list);
+        empty_operation_list(operation_list);
         return NULL;
     }
     return operation_list;

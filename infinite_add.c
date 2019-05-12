@@ -39,14 +39,14 @@ t_number simple_add(t_bistromathique bistromathique, t_number nb_a, t_number nb_
     t_number result = create_number();
 
     if (nb_a.value == NULL)
-        return nb_b;
+        return assign_value_to_number(nb_b.value, nb_b.size);
     if (nb_b.value == NULL)
-        return nb_a;
+        return assign_value_to_number(nb_a.value, nb_b.size);
     if (is_higher(bistromathique, nb_a, nb_b))
         result.size = nb_a.size;
     else
         result.size = nb_b.size;
-    if ((result.value = malloc((sizeof(*result.value) * result.size) + 1)) == NULL)
+    if ((result.value = malloc(sizeof(*result.value) * (result.size + 1))) == NULL)
     {
         my_putstr(MALLOC_ERROR);
         result.size = 0;

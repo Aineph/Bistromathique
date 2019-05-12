@@ -8,7 +8,8 @@
 
 t_number destroy_number(t_number number)
 {
-    free(number.value);
+    if (number.value != NULL)
+        free(number.value);
     number.value = NULL;
     return number;
 }
@@ -48,9 +49,24 @@ t_number number_to_negative(t_bistromathique bistromathique, t_number number)
 t_number assign_value_to_number(char *value, int size)
 {
     t_number number;
+    int index = 0;
 
-    number.value = value;
-    number.size = size;
+    number.size = 0;
+    if (value != NULL)
+    {
+        if ((number.value = malloc(sizeof(*number.value) * (size + 1))) == NULL)
+            number.value = NULL;
+        else
+        {
+            while (index < size)
+            {
+                number.value[index] = value[index];
+                index += 1;
+            }
+            number.value[index] = '\0';
+            number.size = size;
+        }
+    }
     return number;
 }
 

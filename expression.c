@@ -50,7 +50,8 @@ t_expression_tree *parse_left_value(t_bistromathique bistromathique, int positio
     left_expression->first = NULL;
     left_expression->second = NULL;
     left_expression->operator = 0;
-    left_expression->result = assign_value_to_number(result, size);
+    left_expression->result.value = result;
+    left_expression->result.size = size;
     return left_expression;
 }
 
@@ -83,7 +84,8 @@ t_expression_tree *parse_right_value(t_bistromathique bistromathique, int positi
     right_expression->first = NULL;
     right_expression->second = NULL;
     right_expression->operator = 0;
-    right_expression->result = assign_value_to_number(result, size);
+    right_expression->result.value = result;
+    right_expression->result.size = size;
     return right_expression;
 }
 
@@ -125,13 +127,13 @@ t_expression_tree *create_expression(t_bistromathique bistromathique, int positi
     {
         free(new_expression_node);
         return NULL;
-    };
+    }
     if ((new_expression_node->second = parse_right_value(bistromathique, position)) == NULL)
     {
         free(new_expression_node->first);
         free(new_expression_node);
         return NULL;
-    };
+    }
     new_expression_node->operator = bistromathique.expr[position];
     new_expression_node->result = create_number();
     return new_expression_node;

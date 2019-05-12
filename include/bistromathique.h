@@ -48,6 +48,12 @@ typedef struct s_number
     int size;
 } t_number;
 
+typedef struct s_number_list
+{
+    t_number number;
+    struct s_number_list *next;
+} t_number_list;
+
 typedef t_number (*t_operation)(t_bistromathique, t_number, t_number);
 
 typedef struct s_operation_list
@@ -105,7 +111,7 @@ int init_expression_in_list(t_expression_list **);
  * operation_list.c
  */
 
-void free_operation_list(t_operation_list *);
+void empty_operation_list(t_operation_list *);
 
 int add_operation_in_list(t_operation_list **, char, t_operation);
 
@@ -124,6 +130,14 @@ t_number number_to_negative(t_bistromathique, t_number);
 t_number assign_value_to_number(char *, int);
 
 t_number create_number(void);
+
+/*
+ * number_list.c
+ */
+
+void empty_number_list(t_number_list *);
+
+int add_number_to_list(t_number_list **, t_number);
 
 /*
  * compute.c
@@ -146,6 +160,14 @@ t_number infinite_add(t_bistromathique, t_number, t_number);
 t_number simple_sub(t_bistromathique, t_number, t_number);
 
 t_number infinite_sub(t_bistromathique, t_number, t_number);
+
+/*
+ * infinite_mul.c
+ */
+
+t_number simple_mul(t_bistromathique, t_number, t_number);
+
+t_number infinite_mul(t_bistromathique, t_number, t_number);
 
 /*
  * helpers.c
