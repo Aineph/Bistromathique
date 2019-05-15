@@ -68,6 +68,7 @@ typedef struct s_expression_tree
     struct s_expression_tree *first;
     struct s_expression_tree *second;
     char operator;
+    int level;
     t_number *result;
 } t_expression_tree;
 
@@ -91,7 +92,7 @@ t_expression_tree *parse_right_value(t_bistromathique, int);
 
 int update_root_expression(t_bistromathique, t_expression_tree **, t_expression_tree *);
 
-t_expression_tree *create_expression(t_bistromathique, int, int);
+t_expression_tree *create_expression(t_bistromathique, int, int, int);
 
 /*
  * expression_list.c

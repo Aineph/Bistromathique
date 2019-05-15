@@ -24,8 +24,6 @@ compute(t_bistromathique bistromathique, t_operation_list *operation_list, t_exp
         if (operation_list->operator == (*expression_node)->operator)
         {
             (*expression_node)->result = operation_list->operation(bistromathique, nb_a, nb_b);
-            printf("%s %c %s = %s\n", nb_a->value, (*expression_node)->operator, nb_b->value,
-                   (*expression_node)->result->value);
             free_expression(&(*expression_node)->first);
             free_expression(&(*expression_node)->second);
             (*expression_node)->first = NULL;

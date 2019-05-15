@@ -14,6 +14,7 @@ int epur_sub_result(t_bistromathique bistromathique, t_number *result)
         epur_index += 1;
     if ((result->value = str_slice(result->value, epur_index, result->size)) == NULL)
         return -1;
+    result->size -= epur_index;
     return 0;
 }
 

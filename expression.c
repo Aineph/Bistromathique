@@ -110,7 +110,8 @@ int update_root_expression(t_bistromathique bistromathique, t_expression_tree **
         *root = new_expression_node;
         return 0;
     }
-    if (is_priority_operator(bistromathique, new_expression_node->operator))
+    if (is_priority_operator(bistromathique, new_expression_node->operator) &&
+        new_expression_node->level >= (*root)->level)
     {
         new_expression_node->first = (*root)->second;
         (*root)->second = new_expression_node;
@@ -124,7 +125,8 @@ int update_root_expression(t_bistromathique bistromathique, t_expression_tree **
     return 0;
 }
 
-t_expression_tree *create_expression(t_bistromathique bistromathique, int position, int previous_element_size)
+t_expression_tree *
+create_expression(t_bistromathique bistromathique, int position, int level, int previous_element_size)
 {
     t_expression_tree *new_expression_node = NULL;
 
@@ -147,6 +149,7 @@ t_expression_tree *create_expression(t_bistromathique bistromathique, int positi
         return NULL;
     }
     new_expression_node->operator = bistromathique.expr[position];
+    new_expression_node->level = level;
     if ((new_expression_node->result = create_number()) == NULL)
         return NULL;
     return new_expression_node;

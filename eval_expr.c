@@ -12,6 +12,7 @@ t_expression_tree *parse_expr(t_bistromathique bistromathique)
     t_expression_tree *expression_node = NULL;
     t_expression_list *expression_list = NULL;
     int element_size = 0;
+    int level = 0;
     int i = 0;
 
     if (init_expression_in_list(&expression_list) == -1)
@@ -21,18 +22,20 @@ t_expression_tree *parse_expr(t_bistromathique bistromathique)
         if (bistromathique.ops[OP_OPEN_PARENT_IDX] == bistromathique.expr[i])
         {
             element_size = -1;
+            level += 1;
             if (init_expression_in_list(&expression_list) == -1)
                 return NULL;
         }
         else if (bistromathique.ops[OP_CLOSE_PARENT_IDX] == bistromathique.expr[i])
         {
             element_size = -1;
+            level -= 1;
             if (merge_expressions(&expression_list) == -1)
                 return NULL;
         }
         else if (is_operator(bistromathique, bistromathique.expr[i]))
         {
-            if ((expression_node = create_expression(bistromathique, i, element_size)) == NULL)
+            if ((expression_node = create_expression(bistromathique, i, level, element_size)) == NULL)
                 return NULL;
             update_root_expression(bistromathique, &expression_list->expression_root, expression_node);
             element_size = -1;
@@ -75,6 +78,5 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
         empty_operation_list(operation_list);
         return NULL;
     }
-    print_expr(expression_root);
     return compute(bistromathique, operation_list, &expression_root)->value;
 }
