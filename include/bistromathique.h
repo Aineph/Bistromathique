@@ -33,6 +33,14 @@
 # define OPS_ERROR "Bad ops\n"
 # define BASE_ERROR "Bad base\n"
 
+/**
+ * @typedef t_bistromathique
+ * The main structure of the project containing the parameters.
+ * @var base: The base of the numbers to compute.
+ * @var base_length: The length of the base.
+ * @var ops: The string of the operators allowed in the expression.
+ * @var expr: The expression to compute.
+ */
 typedef struct s_bistromathique
 {
     char *base;
@@ -42,20 +50,40 @@ typedef struct s_bistromathique
     unsigned int size;
 } t_bistromathique;
 
+/**
+ * @typedef t_number
+ * The representation of an infinite number.
+ * @var value: The string representation of the number.
+ * @var size: The length of the number.
+ */
 typedef struct s_number
 {
     char *value;
     int size;
 } t_number;
 
+/**
+ * @typedef t_number_list
+ * A linked list that stores a list of numbers.
+ * @var number: The number contained in the list.
+ * @var next: A pointer to the next element of the number list.
+ */
 typedef struct s_number_list
 {
     t_number *number;
     struct s_number_list *next;
 } t_number_list;
 
+/**
+ * @typedef t_operation
+ * A function pointer that points to an operation function.
+ */
 typedef t_number *(*t_operation)(t_bistromathique, t_number *, t_number *);
 
+/**
+ * @typedef t_operation_list
+ * The list of every operations.
+ */
 typedef struct s_operation_list
 {
     char operator;
@@ -63,6 +91,10 @@ typedef struct s_operation_list
     struct s_operation_list *next;
 } t_operation_list;
 
+/**
+ * @typedef t_expression_tree
+ * The tree representing the expression as a binary tree.
+ */
 typedef struct s_expression_tree
 {
     struct s_expression_tree *first;
@@ -72,6 +104,10 @@ typedef struct s_expression_tree
     t_number *result;
 } t_expression_tree;
 
+/**
+ * @typedef t_expression_list
+ * A list of several expression.
+ */
 typedef struct s_expression_list
 {
     t_expression_tree *expression_root;

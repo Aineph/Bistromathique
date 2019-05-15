@@ -13,6 +13,10 @@
 #include <string.h>
 #include "bistromathique.h"
 
+/**
+ * Checks if the base entered by the user is correct.
+ * @param base
+ */
 static void check_base(char *base)
 {
     if (my_strlen(base) < 2)
@@ -22,6 +26,10 @@ static void check_base(char *base)
     }
 }
 
+/**
+ * Checks if the operators entered by the user are correct.
+ * @param ops
+ */
 static void check_ops(char *ops)
 {
     if (my_strlen(ops) != 7)
@@ -31,6 +39,11 @@ static void check_ops(char *ops)
     }
 }
 
+/**
+ * Allocates the memory to store the expression.
+ * @param size: The size of the expression to allocate.
+ * @return expr
+ */
 static char *get_expr(unsigned int size)
 {
     char *expr;
@@ -58,6 +71,12 @@ static char *get_expr(unsigned int size)
     return (expr);
 }
 
+/**
+ * The main function.
+ * @param ac: The number of arguments passed as parameter.
+ * @param av: The arguments values.
+ * @return
+ */
 int main(int ac, char **av)
 {
     char *expr;
