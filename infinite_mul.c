@@ -13,18 +13,22 @@ t_number *perform_multiplication(t_bistromathique bistromathique, t_number *nb_a
     int ret = 0;
     int position_a;
     int position_b;
-
+    
     result->value[offset--] = '\0';
     while (offset >= 0)
     {
         tmp_result = ret;
         position_b = result->size - offset;
         position_a = 1;
-        while (position_a <= result->size - offset)
+        if (position_b > nb_b->size)
         {
-            if (position_a <= nb_a->size && position_b <= nb_b->size)
-                tmp_result += (get_value(bistromathique, nb_a->value[nb_a->size - position_a]) *
-                               get_value(bistromathique, nb_b->value[nb_b->size - position_b]));
+            position_a += position_b - nb_b->size;
+            position_b -= position_b - nb_b->size;
+        }
+        while (position_a <= result->size - offset && position_a <= nb_a->size)
+        {
+            tmp_result += (get_value(bistromathique, nb_a->value[nb_a->size - position_a]) *
+                           get_value(bistromathique, nb_b->value[nb_b->size - position_b]));
             position_a += 1;
             position_b -= 1;
         }
