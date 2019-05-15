@@ -6,22 +6,10 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-int epur_sub_result(t_bistromathique bistromathique, t_number *result)
-{
-    int epur_index = 0;
-
-    while (epur_index < result->size && result->value[epur_index] == bistromathique.base[0])
-        epur_index += 1;
-    if ((result->value = str_slice(result->value, epur_index, result->size)) == NULL)
-        return -1;
-    result->size -= epur_index;
-    return 0;
-}
-
 t_number *perform_substraction(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
 {
     int offset = result->size;
-    char ret = bistromathique.base[0];
+    int ret = 0;
     int tmp_result = 0;
     int position = 1;
 
@@ -31,14 +19,14 @@ t_number *perform_substraction(t_bistromathique bistromathique, t_number *nb_a, 
         tmp_result = get_value(bistromathique, nb_a->value[nb_a->size - position]);
         if (nb_b->size - position >= 0)
             tmp_result -= get_value(bistromathique, nb_b->value[nb_b->size - position]);
-        tmp_result -= get_value(bistromathique, ret);
+        tmp_result -= ret;
         if (tmp_result < 0)
         {
             tmp_result += bistromathique.base_length;
-            ret = bistromathique.base[1];
+            ret = 1;
         }
         else
-            ret = bistromathique.base[0];
+            ret = 0;
         result->value[offset--] = bistromathique.base[tmp_result % bistromathique.base_length];
         position += 1;
     }
@@ -94,7 +82,7 @@ t_number *infinite_sub(t_bistromathique bistromathique, t_number *nb_a, t_number
     }
     else
         result = simple_sub(bistromathique, nb_a, nb_b);
-    if (epur_sub_result(bistromathique, result) == -1)
+    if (epur_result(bistromathique, result) == -1)
         return NULL;
     return result;
 }

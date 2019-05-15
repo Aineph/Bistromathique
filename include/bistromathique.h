@@ -230,6 +230,12 @@ int is_negative(t_bistromathique, t_number *);
 
 int is_higher(t_bistromathique, t_number *, t_number *);
 
+int epur_result(t_bistromathique, t_number *);
+
+/*
+ * string_helpers.c
+ */
+
 char *str_copy(const char *, int);
 
 char *str_prepend(char *, char, int);

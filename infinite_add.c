@@ -9,7 +9,7 @@
 t_number *perform_addition(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
 {
     int offset = result->size;
-    char ret = bistromathique.base[0];
+    int ret = 0;
     int tmp_result = 0;
     int position = 1;
 
@@ -21,14 +21,14 @@ t_number *perform_addition(t_bistromathique bistromathique, t_number *nb_a, t_nu
             tmp_result += get_value(bistromathique, nb_a->value[nb_a->size - position]);
         if (nb_b->size - position >= 0)
             tmp_result += get_value(bistromathique, nb_b->value[nb_b->size - position]);
-        tmp_result += get_value(bistromathique, ret);
-        ret = bistromathique.base[tmp_result / bistromathique.base_length];
+        tmp_result += ret;
+        ret = tmp_result / bistromathique.base_length;
         result->value[offset--] = bistromathique.base[tmp_result % bistromathique.base_length];
         position += 1;
     }
-    if (ret != bistromathique.base[0])
+    if (ret != 0 && ret < bistromathique.base_length)
     {
-        if ((result->value = str_prepend(result->value, ret, result->size)) == NULL)
+        if ((result->value = str_prepend(result->value, bistromathique.base[ret], result->size)) == NULL)
             return NULL;
         result->size += 1;
     }
