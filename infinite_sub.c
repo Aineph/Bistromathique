@@ -30,6 +30,8 @@ t_number *perform_substraction(t_bistromathique bistromathique, t_number *nb_a, 
         result->value[offset--] = bistromathique.base[tmp_result % bistromathique.base_length];
         position += 1;
     }
+    if (epur_result(bistromathique, result) == -1)
+        return NULL;
     return result;
 }
 
@@ -82,7 +84,5 @@ t_number *infinite_sub(t_bistromathique bistromathique, t_number *nb_a, t_number
     }
     else
         result = simple_sub(bistromathique, nb_a, nb_b);
-    if (epur_result(bistromathique, result) == -1)
-        return NULL;
     return result;
 }

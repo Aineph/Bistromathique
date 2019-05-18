@@ -21,7 +21,7 @@ int is_higher(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
         (is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b) && nb_b->size > nb_a->size) ||
         (!is_negative(bistromathique, nb_a) && !is_negative(bistromathique, nb_b) && nb_a->size > nb_b->size))
         return 1;
-    else if ((is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b)) ||
+    else if ((is_negative(bistromathique, nb_a) && !is_negative(bistromathique, nb_b)) ||
              (is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b) && nb_b->size < nb_a->size) ||
              (!is_negative(bistromathique, nb_a) && !is_negative(bistromathique, nb_b) && nb_a->size < nb_b->size))
         return 0;
@@ -48,7 +48,7 @@ int epur_result(t_bistromathique bistromathique, t_number *result)
 
     while (epur_index < result->size && result->value[epur_index] == bistromathique.base[0])
         epur_index += 1;
-    if ((result->value = str_slice(result->value, epur_index, result->size)) == NULL)
+    if (epur_index > 0 && (result->value = str_slice(result->value, epur_index, result->size)) == NULL)
         return -1;
     result->size -= epur_index;
     return 0;

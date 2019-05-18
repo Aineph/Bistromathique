@@ -26,12 +26,9 @@ t_number *perform_addition(t_bistromathique bistromathique, t_number *nb_a, t_nu
         result->value[offset--] = bistromathique.base[tmp_result % bistromathique.base_length];
         position += 1;
     }
-    if (ret != 0 && ret < bistromathique.base_length)
-    {
-        if ((result->value = str_prepend(result->value, bistromathique.base[ret], result->size)) == NULL)
-            return NULL;
-        result->size += 1;
-    }
+    result->value[offset] = bistromathique.base[ret];
+    if (epur_result(bistromathique, result) == -1)
+        return NULL;
     return result;
 }
 
@@ -49,14 +46,11 @@ t_number *simple_add(t_bistromathique bistromathique, t_number *nb_a, t_number *
     }
     if (nb_b->value == NULL)
     {
-        if (assign_value_to_number(result, nb_a->value, nb_b->size) == -1)
+        if (assign_value_to_number(result, nb_a->value, nb_a->size) == -1)
             return NULL;
         return result;
     }
-    if (is_higher(bistromathique, nb_a, nb_b))
-        result->size = nb_a->size;
-    else
-        result->size = nb_b->size;
+    result->size = MAX(nb_a->size, nb_b->size) + 1;
     if ((result->value = malloc(sizeof(*result->value) * (result->size + 1))) == NULL)
     {
         my_putstr(MALLOC_ERROR);
@@ -86,13 +80,13 @@ t_number *infinite_add(t_bistromathique bistromathique, t_number *nb_a, t_number
         {
             if (number_to_positive(bistromathique, nb_b) == -1)
                 return NULL;
-            result = infinite_sub(bistromathique, nb_a, nb_b);
+            result = simple_sub(bistromathique, nb_a, nb_b);
         }
         else
         {
             if (number_to_positive(bistromathique, nb_a) == -1)
                 return NULL;
-            result = infinite_sub(bistromathique, nb_b, nb_a);
+            result = simple_sub(bistromathique, nb_b, nb_a);
         }
     }
     else
