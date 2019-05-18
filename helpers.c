@@ -6,20 +6,10 @@
 #include <unistd.h>
 #include "bistromathique.h"
 
-void my_putchar(char c)
-{
-    write(1, &c, 1);
-}
-
 void my_putstr(char *str)
 {
-    int i = 0;
-
-    while (str != NULL && str[i] != '\0')
-    {
-        my_putchar(str[i]);
-        i += 1;
-    }
+    if (str != NULL)
+        write(1, str, my_strlen(str));
 }
 
 int my_strlen(const char *str)

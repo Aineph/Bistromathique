@@ -38,7 +38,6 @@
  * Macros
  */
 
-# define MIN(a, b) ((a < b) ? (a) : (b))
 # define MAX(a, b) ((a > b) ? (a) : (b))
 
 /**
@@ -222,8 +221,6 @@ t_number *infinite_mul(t_bistromathique, t_number *, t_number *);
  * helpers.c
  */
 
-void my_putchar(char);
-
 void my_putstr(char *);
 
 int my_strlen(const char *);
@@ -237,6 +234,8 @@ int get_value(t_bistromathique, char);
  */
 
 int is_negative(t_bistromathique, t_number *);
+
+int is_null(t_bistromathique, t_number *);
 
 int is_higher(t_bistromathique, t_number *, t_number *);
 

@@ -13,6 +13,17 @@ int is_negative(t_bistromathique bistromathique, t_number *number)
     return 0;
 }
 
+int is_null(t_bistromathique bistromathique, t_number *number)
+{
+    if (number == NULL)
+        return 1;
+    if (number->value == NULL)
+        return 1;
+    if (number->size == 1 && number->value[0] == bistromathique.base[0])
+        return 1;
+    return 0;
+}
+
 int is_higher(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
     int i = 0;
