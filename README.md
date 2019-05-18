@@ -112,5 +112,5 @@ For example if we consider the expression "4+5+(3-7)*2", the tree will look like
 
 The algorithms used in for calculations are standards naive algorithms for the addition and the subtraction.
 They both have a complexity of O(n). In order to improve the computation time of multiplications,
-the algorithm of Karatsuba is used. Thus instead of having a complexity of 0(n^2) as with naive multiplication algorithms,
+the Karatsuba algorithm is used. Thus instead of having a complexity of 0(n^2) as with naive multiplication algorithms,
 the complexity is about O(n^log2(3)) which is almost equivalent to O(n^1.585).
