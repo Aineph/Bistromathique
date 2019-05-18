@@ -38,15 +38,15 @@ t_number *simple_add(t_bistromathique bistromathique, t_number *nb_a, t_number *
 
     if ((result = create_number()) == NULL)
         return NULL;
-    if (nb_a->value == NULL)
+    if (is_null(bistromathique, nb_a))
     {
-        if (assign_value_to_number(result, nb_b->value, nb_b->size) == -1)
+        if (assign_value_to_number(result, nb_b->value, nb_b->size, nb_b->sign) == -1)
             return NULL;
         return result;
     }
-    if (nb_b->value == NULL)
+    if (is_null(bistromathique, nb_b))
     {
-        if (assign_value_to_number(result, nb_a->value, nb_a->size) == -1)
+        if (assign_value_to_number(result, nb_a->value, nb_a->size, nb_a->sign) == -1)
             return NULL;
         return result;
     }
@@ -64,29 +64,28 @@ t_number *infinite_add(t_bistromathique bistromathique, t_number *nb_a, t_number
 {
     t_number *result = NULL;
 
-    if (is_negative(bistromathique, nb_a) && is_negative(bistromathique, nb_b))
+    if (is_negative(nb_a) && is_negative(nb_b))
     {
-        if (number_to_positive(bistromathique, nb_a) == -1)
-            return NULL;
-        if (number_to_positive(bistromathique, nb_b) == -1)
-            return NULL;
+        number_to_positive(nb_a);
+        number_to_positive(nb_b);
         result = simple_add(bistromathique, nb_a, nb_b);
-        if (number_to_negative(bistromathique, result) == -1)
-            return NULL;
+        number_to_negative(nb_a);
+        number_to_negative(nb_b);
+        number_to_negative(result);
     }
-    else if (is_negative(bistromathique, nb_a) || is_negative(bistromathique, nb_b))
+    else if (is_negative(nb_a) || is_negative(nb_b))
     {
         if (is_higher(bistromathique, nb_a, nb_b))
         {
-            if (number_to_positive(bistromathique, nb_b) == -1)
-                return NULL;
-            result = simple_sub(bistromathique, nb_a, nb_b);
+            number_to_positive(nb_b);
+            result = infinite_sub(bistromathique, nb_a, nb_b);
+            number_to_negative(nb_b);
         }
         else
         {
-            if (number_to_positive(bistromathique, nb_a) == -1)
-                return NULL;
-            result = simple_sub(bistromathique, nb_b, nb_a);
+            number_to_positive(nb_a);
+            result = infinite_sub(bistromathique, nb_b, nb_a);
+            number_to_negative(nb_a);
         }
     }
     else

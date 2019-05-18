@@ -13,35 +13,17 @@ void free_number(t_number *number)
     free(number);
 }
 
-int number_to_positive(t_bistromathique bistromathique, t_number *number)
+void number_to_positive(t_number *number)
 {
-    int number_size = number->size;
-
-    if (number->value != NULL && is_negative(bistromathique, number))
-    {
-        number->size = 0;
-        if ((number->value = str_slice(number->value, 1, number_size)) == NULL)
-            return -1;
-    }
-    number->size = number_size - 1;
-    return 0;
+    number->sign = SIGN_POS;
 }
 
-int number_to_negative(t_bistromathique bistromathique, t_number *number)
+void number_to_negative(t_number *number)
 {
-    int number_size = number->size;
-
-    if (number->value != NULL && !is_negative(bistromathique, number))
-    {
-        number->size = 0;
-        if ((number->value = str_prepend(number->value, '-', number_size)) == NULL)
-            return -1;
-    }
-    number->size = number_size + 1;
-    return 0;
+    number->sign = SIGN_NEG;
 }
 
-int assign_value_to_number(t_number *number, char *value, int size)
+int assign_value_to_number(t_number *number, char *value, int size, t_sign sign)
 {
     if (number->value != NULL)
         free(number->value);
@@ -49,6 +31,7 @@ int assign_value_to_number(t_number *number, char *value, int size)
     if ((number->value = str_copy(value, size)) == NULL)
         return -1;
     number->size = size;
+    number->sign = sign;
     return 0;
 }
 
@@ -63,5 +46,6 @@ t_number *create_number(void)
     }
     number->value = NULL;
     number->size = 0;
+    number->sign = SIGN_POS;
     return number;
 }

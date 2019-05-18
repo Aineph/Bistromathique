@@ -65,6 +65,7 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
     t_bistromathique bistromathique;
     t_expression_tree *expression_root;
     t_operation_list *operation_list = NULL;
+    t_number *result;
 
     bistromathique.base = base;
     bistromathique.base_length = my_strlen(base);
@@ -78,5 +79,8 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
         empty_operation_list(operation_list);
         return NULL;
     }
-    return compute(bistromathique, operation_list, &expression_root)->value;
+    result = compute(bistromathique, operation_list, &expression_root);
+    if (result->sign == SIGN_NEG)
+        result->value = str_prepend(result->value, bistromathique.ops[OP_NEG_IDX], result->size);
+    return result->value;
 }

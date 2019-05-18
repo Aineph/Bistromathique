@@ -57,6 +57,11 @@ typedef struct s_bistromathique
     unsigned int size;
 } t_bistromathique;
 
+typedef enum e_sign
+{
+    SIGN_POS, SIGN_NEG
+} t_sign;
+
 /**
  * @typedef t_number
  * The representation of an infinite number.
@@ -67,6 +72,7 @@ typedef struct s_number
 {
     char *value;
     int size;
+    t_sign sign;
 } t_number;
 
 /**
@@ -179,11 +185,11 @@ t_operation_list *init_operation_list(t_bistromathique);
 
 void free_number(t_number *);
 
-int number_to_positive(t_bistromathique, t_number *);
+void number_to_positive(t_number *);
 
-int number_to_negative(t_bistromathique, t_number *);
+void number_to_negative(t_number *);
 
-int assign_value_to_number(t_number *, char *, int);
+int assign_value_to_number(t_number *, char *, int, t_sign sign);
 
 t_number *create_number(void);
 
@@ -233,7 +239,7 @@ int get_value(t_bistromathique, char);
  * compute_helpers.c
  */
 
-int is_negative(t_bistromathique, t_number *);
+int is_negative(t_number *);
 
 int is_null(t_bistromathique, t_number *);
 
