@@ -68,3 +68,27 @@ char *str_slice(char *source, int index, int length)
     free(source);
     return result;
 }
+
+char *str_rpad(char *str, int length, char c, int count)
+{
+    char *result = NULL;
+    int i = 0;
+    int j = 0;
+
+    if ((result = malloc(sizeof(*result) * (length + count + 1))) == NULL)
+        return NULL;
+    while (str != NULL && i < length)
+    {
+        result[i] = str[i];
+        i += 1;
+    }
+    while (j < count)
+    {
+        result[i + j] = c;
+        j += 1;
+    }
+    result[i + j] = '\0';
+    if (str != NULL)
+        free(str);
+    return result;
+}

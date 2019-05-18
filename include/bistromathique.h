@@ -14,6 +14,7 @@
 /*
  * Indexes
  */
+
 # define OP_OPEN_PARENT_IDX 0
 # define OP_CLOSE_PARENT_IDX 1
 # define OP_PLUS_IDX 2
@@ -32,6 +33,12 @@
 # define MALLOC_ERROR "could not alloc\n"
 # define OPS_ERROR "Bad ops\n"
 # define BASE_ERROR "Bad base\n"
+
+/*
+ * Macros
+ */
+
+# define MIN(a, b) ((a < b) ? (a) : (b))
 
 /**
  * @typedef t_bistromathique
@@ -63,16 +70,28 @@ typedef struct s_number
 } t_number;
 
 /**
- * @typedef t_number_list
- * A linked list that stores a list of numbers.
- * @var number: The number contained in the list.
- * @var next: A pointer to the next element of the number list.
+ * @typedef t_multiplication
+ * The necessary variables needed to perform the multiplication algorithm.
+ * @var middle: The middle offset of the numbers.
+ * @var high_a: The high part of number A.
+ * @var low_a: The low part of number A.
+ * @var high_b: The high part of number B.
+ * @var low_b: The low part of number B.
+ * @var a0: The result of the expression high_a * high_b.
+ * @var a1: The result of the expression (high_a + low_a) * (high_b + low_b).
+ * @var a2: The result of the expression low_a * low_b.
  */
-typedef struct s_number_list
+typedef struct s_multiplication
 {
-    t_number *number;
-    struct s_number_list *next;
-} t_number_list;
+    int middle;
+    t_number *high_a;
+    t_number *low_a;
+    t_number *high_b;
+    t_number *low_b;
+    t_number *a0;
+    t_number *a1;
+    t_number *a2;
+} t_multiplication;
 
 /**
  * @typedef t_operation
@@ -169,20 +188,10 @@ int assign_value_to_number(t_number *, char *, int);
 t_number *create_number(void);
 
 /*
- * number_list.c
- */
-
-void empty_number_list(t_number_list *);
-
-int add_number_to_list(t_number_list **, t_number *);
-
-/*
  * compute.c
  */
 
 t_number *compute(t_bistromathique, t_operation_list *, t_expression_tree **);
-
-//t_number compute(t_bistromathique, t_operation_list *, t_expression_tree *);
 
 /*
  * infinite_add.c
@@ -241,6 +250,8 @@ char *str_copy(const char *, int);
 char *str_prepend(char *, char, int);
 
 char *str_slice(char *, int, int);
+
+char *str_rpad(char *, int, char, int);
 
 /*
  * parsing_helpers.c
