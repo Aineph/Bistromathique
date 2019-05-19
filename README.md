@@ -9,7 +9,13 @@ This version of Bistromathique contains the following operations:
 
 ## Build system
 
-The project uses CMake in order to compile.
+The project uses CMake in order to compile. The minimum version required is 3.12.
+You can download it there: https://cmake.org/download/.
+
+If you can't get the latest version of CMake, you can still try to change the value in the CMakeLists.txt.
+You need at least a C compiler to build the binary.
+
+This section will guide you on how to build the target using cmake.
 After cloning the repository, create an empty "build" repository inside this project, by using the command:
 ```
 $> mkdir build
@@ -19,7 +25,7 @@ Once the repository is created run the following commands:
 
 ```
 $> cd build/
-# If you are using a linux system
+# If you are using a linux system (including macOS)
 $> cmake .. && make
 # If you want to compile it on an other platform
 $> cmake .. -G [platform_name]
@@ -35,7 +41,7 @@ Bistromathique takes 3 mandatory arguments from the command line:
 * The list of operators
 * The size of the expression to parse
 
-##### The Base
+#### The Base
 
 You need to provide the program the base on which you want to calculate your expression.
 The syntax of this argument is a string containing the characters of the base.
@@ -52,7 +58,7 @@ $> ./Bistromathique "0123456789ABCDEF" "()+-*/%" 42
 
 You can change every digits in order to create your own base of computation.
 
-##### The operators
+#### The operators
 
 The list of operators has a fixed size.
 Thus you will necessarily have to provide the 7 mandatory operators the program needs in order to run it.
@@ -74,7 +80,7 @@ $> ./Bistromathique "0123456789" "()+-*/%" 42
 $> ./Bistromathique "0123456789" "[]+-x:R" 42
 ```
 
-##### The size
+#### The size
 
 You also have to provide the size of the arithmetic expression.
 If you use the program using the "echo", then you should give the exact number of characters you entered.

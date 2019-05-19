@@ -224,6 +224,14 @@ t_number *simple_mul(t_bistromathique, t_number *, t_number *);
 t_number *infinite_mul(t_bistromathique, t_number *, t_number *);
 
 /*
+ * infinite_div.c
+ */
+
+//t_number *simple_div(t_bistromathique, t_number *, t_number *);
+
+t_number *infinite_div(t_bistromathique, t_number *, t_number *);
+
+/*
  * helpers.c
  */
 

@@ -103,7 +103,7 @@ t_number *simple_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *
     t_number *a1_a;
     t_number *a1_b;
 
-    if (nb_a->size + nb_b->size < 100 || nb_a->size < 25 || nb_b->size < 25)
+    if (nb_a->size + nb_b->size < 100 || (nb_a->size < 25 && nb_b->size < 25))
     {
         result = create_number();
         result->size = nb_a->size + nb_b->size;

@@ -80,14 +80,11 @@ t_number *infinite_sub(t_bistromathique bistromathique, t_number *nb_a, t_number
         {
             number_to_positive(nb_a);
             result = infinite_add(bistromathique, nb_a, nb_b);
-            number_to_negative(result);
             number_to_negative(nb_a);
         }
         else
-        {
             result = simple_sub(bistromathique, nb_b, nb_a);
-            number_to_negative(result);
-        }
+        number_to_negative(result);
     }
     else
         result = simple_sub(bistromathique, nb_a, nb_b);

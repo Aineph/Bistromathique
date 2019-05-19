@@ -48,7 +48,7 @@ t_operation_list *init_operation_list(t_bistromathique bistromathique)
         empty_operation_list(operation_list);
         return NULL;
     }
-    if (add_operation_in_list(&operation_list, bistromathique.ops[OP_DIV_IDX], &infinite_add) == -1)
+    if (add_operation_in_list(&operation_list, bistromathique.ops[OP_DIV_IDX], &infinite_div) == -1)
     {
         empty_operation_list(operation_list);
         return NULL;
