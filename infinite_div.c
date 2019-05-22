@@ -84,7 +84,7 @@ t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *
         return NULL;
     nb_a->size += 1;
     printf("%s, %s\n", nb_a->value, nb_b->value);
-    while (offset < result->size)
+    while (offset <= result->size)
     {
         if (get_value(bistromathique, nb_b->value[position_b]) == get_value(bistromathique, nb_a->value[offset]))
             guess = bistromathique.base_length - 1;
@@ -179,7 +179,7 @@ t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number
         assign_value_to_number(result, "0", 1, SIGN_POS);
         return result;
     }
-    result->size = nb_a->size - nb_b->size + 1;
+    result->size = nb_a->size - nb_b->size + 2;
     if ((result->value = malloc(sizeof(*result->value) * (result->size + 1))) == NULL)
     {
         free_number(result);
@@ -187,5 +187,7 @@ t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number
         return NULL;
     }
     result = simple_div(bistromathique, nb_a, nb_b, result);
+    epur_result(bistromathique, result);
+    // result->value[result->size] = '\0';
     return result;
 }
