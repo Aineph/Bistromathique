@@ -6,6 +6,50 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
+t_number *multiply_div(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+{
+    t_number *result;
+    int tmp_result = 0;
+    int ret = 0;
+    int position_a;
+    int position_b;
+    int offset = 0;
+
+    result = create_number();
+    result->size = nb_a->size + nb_b->size;
+    if ((result->value = malloc(sizeof(*result->value) * (result->size + 1))) == NULL)
+        return NULL;
+    offset = result->size;
+    result->value[offset--] = '\0';
+    offset = result->size;
+    while (offset >= 0)
+    {
+        tmp_result = ret;
+        position_b = result->size - offset;
+        position_a = 1;
+        if (position_b > nb_b->size)
+        {
+            position_a += (position_b - nb_b->size);
+            position_b -= (position_b - nb_b->size);
+        }
+        while (position_a <= result->size - offset && position_a <= nb_a->size)
+        {
+            tmp_result += (get_value(bistromathique, nb_a->value[nb_a->size - position_a]) *
+                           get_value(bistromathique, nb_b->value[nb_b->size - position_b]));
+            position_a += 1;
+            position_b -= 1;
+        }
+        result->value[offset] = bistromathique.base[tmp_result % bistromathique.base_length];
+        ret = tmp_result / bistromathique.base_length;
+        offset -= 1;
+    }
+    result->sign = SIGN_POS;
+    if ((is_negative(nb_a) || is_negative(nb_b)) && nb_a->sign != nb_b->sign)
+        number_to_negative(result);
+    return result;
+}
+
+
 t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
 {
     t_number *tmp = NULL;
@@ -36,6 +80,9 @@ t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *
         free_number(res_tmp);
         printf("nb_b = %s\n", nb_b->value);
     }
+    if ((nb_a->value = str_prepend(nb_a->value, bistromathique.base[0], nb_a->size)) == NULL)
+        return NULL;
+    nb_a->size += 1;
     printf("%s, %s\n", nb_a->value, nb_b->value);
     while (offset < result->size)
     {
@@ -63,7 +110,7 @@ t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *
         if (guess != 0)
         {
             assign_value_to_number(tmp, &bistromathique.base[guess % bistromathique.base_length], 1, SIGN_POS);
-            res_tmp = simple_mul(bistromathique, nb_b, tmp);
+            res_tmp = multiply_div(bistromathique, nb_b, tmp);
             iterator = 0;
             while (iterator < nb_b->size + 1)
             {
