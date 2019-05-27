@@ -59,7 +59,7 @@ static char *get_expr(unsigned int size)
         my_putstr(MALLOC_ERROR);
         exit(3);
     }
-    while ((read_size = read(0, &expr[tmp_size], size)) > 0)
+    if ((read_size = read(0, &expr[tmp_size], size)) > 0)
         tmp_size += read_size;
     if (tmp_size < size)
     {

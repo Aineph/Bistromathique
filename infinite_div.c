@@ -49,6 +49,31 @@ t_number *multiply_div(t_bistromathique bistromathique, t_number *nb_a, t_number
     return result;
 }
 
+int normalize_values(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+{
+    t_number *normalized_value = NULL;
+    t_number *ratio_number = NULL;
+    int ratio = bistromathique.base_length;
+
+    if (nb_b->size > 0)
+        ratio /= (get_value(bistromathique, nb_b->value[0]) + 1);
+    if (ratio != 1)
+    {
+        ratio_number = create_number();
+        assign_value_to_number(ratio_number, &bistromathique.base[ratio % bistromathique.base_length], 1, SIGN_POS);
+        normalized_value = simple_mul(bistromathique, nb_a, ratio_number);
+        assign_value_to_number(nb_a, normalized_value->value, normalized_value->size, normalized_value->sign);
+        free_number(normalized_value);
+        normalized_value = simple_mul(bistromathique, nb_b, ratio_number);
+        assign_value_to_number(nb_b, normalized_value->value, normalized_value->size, normalized_value->sign);
+        free_number(normalized_value);
+        free_number(ratio_number);
+    }
+    if ((nb_a->value = str_prepend(nb_a->value, bistromathique.base[0], nb_a->size)) == NULL)
+        return -1;
+    nb_a->size += 1;
+    return 0;
+}
 
 t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
 {
@@ -61,30 +86,10 @@ t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *
     int guess = 0;
     int ret;
     int negativity;
-    int norm;
 
     tmp = create_number();
-    norm = bistromathique.base_length / (get_value(bistromathique, nb_b->value[position_b]) + 1);
-    printf("%d\n", norm);
-    if (norm != 1)
-    {
-        printf("nb_a = %s\n", nb_a->value);
-        assign_value_to_number(tmp, &bistromathique.base[norm % bistromathique.base_length], 1, SIGN_POS);
-        printf("tmp = %s\n", tmp->value);
-        res_tmp = simple_mul(bistromathique, nb_a, tmp);
-        assign_value_to_number(nb_a, res_tmp->value, res_tmp->size, res_tmp->sign);
-        printf("nb_a = %s\n", nb_a->value);
-        free_number(res_tmp);
-        res_tmp = simple_mul(bistromathique, nb_b, tmp);
-        assign_value_to_number(nb_b, res_tmp->value, res_tmp->size, res_tmp->sign);
-        free_number(res_tmp);
-        printf("nb_b = %s\n", nb_b->value);
-    }
-    if ((nb_a->value = str_prepend(nb_a->value, bistromathique.base[0], nb_a->size)) == NULL)
-        return NULL;
-    nb_a->size += 1;
-    printf("%s, %s\n", nb_a->value, nb_b->value);
-    while (offset <= result->size)
+    normalize_values(bistromathique, nb_a, nb_b);
+    while (offset < result->size)
     {
         if (get_value(bistromathique, nb_b->value[position_b]) == get_value(bistromathique, nb_a->value[offset]))
             guess = bistromathique.base_length - 1;
@@ -127,12 +132,10 @@ t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *
                                                                                   bistromathique.base_length];
                 iterator += 1;
             }
-            printf("new nb_a = %s\n", nb_a->value);
             free_number(res_tmp);
         }
         if (negativity == 1)
         {
-            printf("negativity\n");
             guess -= 1;
             ret = 0;
             iterator = 0;
@@ -155,12 +158,19 @@ t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *
                         (get_value(bistromathique, nb_a->value[offset + nb_b->size - iterator]) + 1) %
                         bistromathique.base_length;
         }
-        printf("guess = %d\n", guess);
-        printf("offset = %d\n", offset);
+        res_tmp = create_number();
         result->value[offset] = bistromathique.base[guess % bistromathique.base_length];
         offset += 1;
+        assign_value_to_number(res_tmp, nb_a->value, nb_a->size, nb_a->sign);
+        epur_result(bistromathique, res_tmp);
+        if (is_higher(bistromathique, nb_b, res_tmp))
+        {
+            free_number(res_tmp);
+            result->size = offset;
+            break;
+        }
+        free_number(res_tmp);
     }
-    printf("%d\n", offset);
     free_number(tmp);
     result->value[offset] = '\0';
     return result;
@@ -188,6 +198,5 @@ t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number
     }
     result = simple_div(bistromathique, nb_a, nb_b, result);
     epur_result(bistromathique, result);
-    // result->value[result->size] = '\0';
     return result;
 }
