@@ -34,13 +34,21 @@ int empty_expression_list(t_expression_list **list)
 int merge_expressions(t_expression_list **list)
 {
     t_expression_list *super_expression = (*list)->next;
+    t_expression_tree *expression_root;
 
     if (super_expression == NULL)
         return -1;
     if (super_expression->expression_root->first == NULL || super_expression->expression_root->second == NULL)
         super_expression->expression_root = (*list)->expression_root;
     else
-        super_expression->expression_root->second = (*list)->expression_root;
+    {
+        expression_root = super_expression->expression_root;
+
+        while (expression_root->second != NULL && expression_root->second->second != NULL)
+            expression_root = expression_root->second;
+        free_expression(&expression_root->second);
+        expression_root->second = (*list)->expression_root;
+    }
     pop_expression_from_list(list);
     return 0;
 }

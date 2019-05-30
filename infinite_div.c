@@ -184,19 +184,29 @@ t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *
             result->value[offset - position] = bistromathique.base[guess % bistromathique.base_length];
         offset += 1;
     }
-    result->value[offset - position] = '\0';
+    result->size = offset - position;
+    result->value[result->size] = '\0';
     return result;
 }
 
 t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
     t_number *result = NULL;
+    t_sign nb_a_sign = nb_a->sign;
+    t_sign nb_b_sign = nb_b->sign;
 
     if (is_null(bistromathique, nb_b))
         return NULL;
     if ((result = create_number()) == NULL)
         return NULL;
-    if (is_null(bistromathique, nb_a) || (nb_a->sign == nb_b->sign && is_higher(bistromathique, nb_b, nb_a)))
+    if (nb_a_sign != nb_b_sign)
+    {
+        nb_a->sign = nb_b_sign;
+        result->sign = SIGN_NEG;
+    }
+    else
+        result->sign = SIGN_POS;
+    if (is_null(bistromathique, nb_a) || (is_higher(bistromathique, nb_b, nb_a)))
     {
         assign_value_to_number(result, "0", 1, SIGN_POS);
         return result;
