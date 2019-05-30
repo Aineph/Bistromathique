@@ -6,40 +6,40 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-int pop_expression_from_list(t_expression_list **list)
+int pop_expression_from_stack(t_expression_stack **expression_stack)
 {
-    t_expression_list *save = *list;
+    t_expression_stack *save = *expression_stack;
 
-    if (*list == NULL)
+    if (*expression_stack == NULL)
     {
         my_putstr(SYNTAXE_ERROR_MSG);
         return -1;
     }
-    *list = (*list)->next;
+    *expression_stack = (*expression_stack)->next;
     free(save);
     return 0;
 }
 
-int empty_expression_list(t_expression_list **list)
+int empty_expression_stack(t_expression_stack **expression_stack)
 {
-    while (*list != NULL)
+    while (*expression_stack != NULL)
     {
-        free_expression(&(*list)->expression_root);
-        if (pop_expression_from_list(list) == -1)
+        free_expression(&(*expression_stack)->expression_root);
+        if (pop_expression_from_stack(expression_stack) == -1)
             return -1;
     }
     return 0;
 }
 
-int merge_expressions(t_expression_list **list)
+int merge_expressions(t_expression_stack **expression_stack)
 {
-    t_expression_list *super_expression = (*list)->next;
+    t_expression_stack *super_expression = (*expression_stack)->next;
     t_expression_tree *expression_root;
 
     if (super_expression == NULL)
         return -1;
     if (super_expression->expression_root->first == NULL || super_expression->expression_root->second == NULL)
-        super_expression->expression_root = (*list)->expression_root;
+        super_expression->expression_root = (*expression_stack)->expression_root;
     else
     {
         expression_root = super_expression->expression_root;
@@ -47,15 +47,15 @@ int merge_expressions(t_expression_list **list)
         while (expression_root->second != NULL && expression_root->second->second != NULL)
             expression_root = expression_root->second;
         free_expression(&expression_root->second);
-        expression_root->second = (*list)->expression_root;
+        expression_root->second = (*expression_stack)->expression_root;
     }
-    pop_expression_from_list(list);
+    pop_expression_from_stack(expression_stack);
     return 0;
 }
 
-int add_expression_to_list(t_expression_list **list, t_expression_tree *expression_root)
+int add_expression_to_stack(t_expression_stack **list, t_expression_tree *expression_root)
 {
-    t_expression_list *new_element;
+    t_expression_stack *new_element;
 
     if ((new_element = malloc(sizeof(*new_element))) == NULL)
     {
@@ -68,7 +68,7 @@ int add_expression_to_list(t_expression_list **list, t_expression_tree *expressi
     return 0;
 }
 
-int init_expression_in_list(t_expression_list **list)
+int create_sub_expression(t_expression_stack **expression_stack, int level)
 {
     t_expression_tree *expression_root = NULL;
 
@@ -80,7 +80,7 @@ int init_expression_in_list(t_expression_list **list)
     expression_root->first = NULL;
     expression_root->second = NULL;
     expression_root->operator = 0;
-    expression_root->level = 0;
+    expression_root->level = level;
     if ((expression_root->result = create_number()) == NULL)
     {
         free(expression_root);
@@ -88,10 +88,10 @@ int init_expression_in_list(t_expression_list **list)
     }
     expression_root->result->value = NULL;
     expression_root->result->size = 0;
-    if (add_expression_to_list(list, expression_root) == -1)
+    if (add_expression_to_stack(expression_stack, expression_root) == -1)
     {
         free(expression_root);
-        empty_expression_list(list);
+        empty_expression_stack(expression_stack);
         return -1;
     }
     return 0;

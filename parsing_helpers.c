@@ -19,6 +19,13 @@ int is_priority_operator(t_bistromathique bistromathique, char c)
     return 0;
 }
 
+int is_parenthesis(t_bistromathique bistromathique, char c)
+{
+    if (c == bistromathique.ops[OP_OPEN_PARENT_IDX] || c == bistromathique.ops[OP_CLOSE_PARENT_IDX])
+        return 1;
+    return 0;
+}
+
 int is_operator(t_bistromathique bistromathique, char c)
 {
     int i = 0;

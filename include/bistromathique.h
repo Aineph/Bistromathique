@@ -130,14 +130,14 @@ typedef struct s_expression_tree
 } t_expression_tree;
 
 /**
- * @typedef t_expression_list
- * A list of several expression.
+ * @typedef t_expression_stack
+ * A stack of expression trees used to manage parenthesis.
  */
-typedef struct s_expression_list
+typedef struct s_expression_stack
 {
     t_expression_tree *expression_root;
-    struct s_expression_list *next;
-} t_expression_list;
+    struct s_expression_stack *next;
+} t_expression_stack;
 
 void print_expr(t_expression_tree *);
 
@@ -147,27 +147,27 @@ void print_expr(t_expression_tree *);
 
 void free_expression(t_expression_tree **);
 
-t_expression_tree *parse_left_value(t_bistromathique, int, int);
+t_expression_tree *parse_left_value(t_bistromathique, int);
 
 t_expression_tree *parse_right_value(t_bistromathique, int);
 
-int update_root_expression(t_bistromathique, t_expression_tree **, t_expression_tree *);
+void update_root_expression(t_bistromathique, t_expression_tree **, t_expression_tree *);
 
-t_expression_tree *create_expression(t_bistromathique, int, int, int);
+t_expression_tree *create_expression(t_bistromathique, int, int);
 
 /*
- * expression_list.c
+ * expression_stack.c
  */
 
-int pop_expression_from_list(t_expression_list **);
+int pop_expression_from_stack(t_expression_stack **);
 
-int empty_expression_list(t_expression_list **);
+int empty_expression_stack(t_expression_stack **);
 
-int merge_expressions(t_expression_list **);
+int merge_expressions(t_expression_stack **);
 
-int add_expression_to_list(t_expression_list **, t_expression_tree *);
+int add_expression_to_stack(t_expression_stack **, t_expression_tree *);
 
-int init_expression_in_list(t_expression_list **);
+int create_sub_expression(t_expression_stack **, int);
 
 /*
  * operation_list.c
@@ -276,6 +276,8 @@ char *str_rpad(char *, int, char, int);
  */
 
 int is_priority_operator(t_bistromathique, char);
+
+int is_parenthesis(t_bistromathique, char);
 
 int is_operator(t_bistromathique, char);
 

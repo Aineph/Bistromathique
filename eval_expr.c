@@ -8,7 +8,7 @@
 #include "bistromathique.h"
 
 /*
- * To remove after finishing development.
+ * To remove after ending development.
  */
 void print_expr(t_expression_tree *expression_node)
 {
@@ -22,6 +22,73 @@ void print_expr(t_expression_tree *expression_node)
     printf("%c\n", expression_node->operator);
     if (expression_node->second != NULL)
         print_expr(expression_node->second);
+}
+
+/**
+ * Manages the stack of expressions when a parenthesis is encountered.
+ * @param bistromathique: The bistromathique structure.
+ * @param expression_stack: The stack of expressions.
+ * @param index: The current index in the arithmetic expression.
+ * @return: The current parenthesis level in the expression.
+ */
+static int manage_parenthesis(t_bistromathique bistromathique, t_expression_stack **expression_stack, int index)
+{
+    static int expression_level = 0;
+
+    if (bistromathique.expr[index] == bistromathique.ops[OP_OPEN_PARENT_IDX])
+    {
+        expression_level += 1;
+        if (create_sub_expression(expression_stack, expression_level) == -1)
+        {
+            empty_expression_stack(expression_stack);
+            return -1;
+        }
+    }
+    else if (bistromathique.expr[index] == bistromathique.ops[OP_CLOSE_PARENT_IDX])
+    {
+        expression_level -= 1;
+        if (merge_expressions(expression_stack) == -1)
+        {
+            empty_expression_stack(expression_stack);
+            return -1;
+        }
+    }
+    return expression_level;
+}
+
+/**
+ * Parses the arithmetic expression in the bistromathique structure and turns it into an expression tree.
+ * @param bistromathique: The bistromathique structure.
+ * @return: The expression tree generated.
+ */
+static t_expression_tree *parse_expr(t_bistromathique bistromathique)
+{
+    t_expression_tree *expression_node = NULL;
+    t_expression_stack *expression_stack = NULL;
+    int expression_level = 0;
+    int index = 0;
+
+    if (create_sub_expression(&expression_stack, expression_level) == -1)
+        return NULL;
+    while (index < bistromathique.size)
+    {
+        if (is_parenthesis(bistromathique, bistromathique.expr[index]))
+        {
+            if ((expression_level = manage_parenthesis(bistromathique, &expression_stack, index)) == -1)
+                return NULL;
+        }
+        else if (is_operator(bistromathique, bistromathique.expr[index]))
+        {
+            if ((expression_node = create_expression(bistromathique, index, expression_level)) == NULL)
+            {
+                empty_expression_stack(&expression_stack);
+                return NULL;
+            }
+            update_root_expression(bistromathique, &expression_stack->expression_root, expression_node);
+        }
+        index += 1;
+    }
+    return expression_stack->expression_root;
 }
 
 /**
@@ -42,50 +109,6 @@ static t_bistromathique init_bistromathique(char *base, char *ops, char *expr, u
     bistromathique.expr = expr;
     bistromathique.size = size;
     return bistromathique;
-}
-
-/**
- * Parses the arithmetic expression in the bistromathique structure and turns it into an expression tree.
- * @param bistromathique: The bistromathique structure.
- * @return: The expression tree generated.
- */
-static t_expression_tree *parse_expr(t_bistromathique bistromathique)
-{
-    t_expression_tree *expression_node = NULL;
-    t_expression_list *expression_list = NULL;
-    int element_size = 0;
-    int level = 0;
-    int i = 0;
-
-    if (init_expression_in_list(&expression_list) == -1)
-        return NULL;
-    while (i < bistromathique.size)
-    {
-        if (bistromathique.ops[OP_OPEN_PARENT_IDX] == bistromathique.expr[i])
-        {
-            element_size = -1;
-            level += 1;
-            if (init_expression_in_list(&expression_list) == -1)
-                return NULL;
-        }
-        else if (bistromathique.ops[OP_CLOSE_PARENT_IDX] == bistromathique.expr[i])
-        {
-            element_size = -1;
-            level -= 1;
-            if (merge_expressions(&expression_list) == -1)
-                return NULL;
-        }
-        else if (is_operator(bistromathique, bistromathique.expr[i]))
-        {
-            if ((expression_node = create_expression(bistromathique, i, level, element_size)) == NULL)
-                return NULL;
-            update_root_expression(bistromathique, &expression_list->expression_root, expression_node);
-            element_size = -1;
-        }
-        element_size += 1;
-        i += 1;
-    }
-    return expression_list->expression_root;
 }
 
 /**
