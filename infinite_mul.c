@@ -97,6 +97,17 @@ t_number *perform_multiplication(t_bistromathique bistromathique, t_number *nb_a
 
 t_number *simple_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
+    t_number *result = NULL;
+
+    result = create_number();
+    result->size = nb_a->size + nb_b->size;
+    if ((result->value = malloc(sizeof(*result->value) * (result->size + 1))) == NULL)
+        return NULL;
+    return perform_multiplication(bistromathique, nb_a, nb_b, result);
+}
+
+t_number *recursive_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+{
     t_multiplication multiplication;
     t_number *result;
     t_number *tmp_result;
@@ -104,28 +115,22 @@ t_number *simple_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *
     t_number *a1_b;
 
     if (nb_a->size + nb_b->size < 100 || (nb_a->size < 25 || nb_b->size < 25))
-    {
-        result = create_number();
-        result->size = nb_a->size + nb_b->size;
-        if ((result->value = malloc(sizeof(*result->value) * (result->size + 1))) == NULL)
-            return NULL;
-        return perform_multiplication(bistromathique, nb_a, nb_b, result);
-    }
+        return simple_mul(bistromathique, nb_a, nb_b);
     multiplication = init_multiplication(bistromathique, nb_a, nb_b);
     a1_a = infinite_sub(bistromathique, multiplication.high_a, multiplication.low_a);
     a1_b = infinite_sub(bistromathique, multiplication.high_b, multiplication.low_b);
     if (is_null(bistromathique, multiplication.high_a) || is_null(bistromathique, multiplication.high_b))
         assign_value_to_number(multiplication.a0, "0", 1, SIGN_POS);
     else
-        multiplication.a0 = simple_mul(bistromathique, multiplication.high_a, multiplication.high_b);
+        multiplication.a0 = recursive_mul(bistromathique, multiplication.high_a, multiplication.high_b);
     if (is_null(bistromathique, a1_a) || is_null(bistromathique, a1_b))
         assign_value_to_number(multiplication.a1, "0", 1, SIGN_POS);
     else
-        multiplication.a1 = simple_mul(bistromathique, a1_a, a1_b);
+        multiplication.a1 = recursive_mul(bistromathique, a1_a, a1_b);
     if (is_null(bistromathique, multiplication.low_a) || is_null(bistromathique, multiplication.low_b))
         assign_value_to_number(multiplication.a2, "0", 1, SIGN_POS);
     else
-        multiplication.a2 = simple_mul(bistromathique, multiplication.low_a, multiplication.low_b);
+        multiplication.a2 = recursive_mul(bistromathique, multiplication.low_a, multiplication.low_b);
     tmp_result = infinite_add(bistromathique, multiplication.a0, multiplication.a2);
     result = infinite_sub(bistromathique, tmp_result, multiplication.a1);
     free_number(tmp_result);
@@ -147,6 +152,6 @@ t_number *infinite_mul(t_bistromathique bistromathique, t_number *nb_a, t_number
 {
     t_number *result;
 
-    result = simple_mul(bistromathique, nb_a, nb_b);
+    result = recursive_mul(bistromathique, nb_a, nb_b);
     return result;
 }

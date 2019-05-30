@@ -21,7 +21,6 @@ t_number *multiply_div(t_bistromathique bistromathique, t_number *nb_a, t_number
         return NULL;
     offset = result->size;
     result->value[offset--] = '\0';
-    offset = result->size;
     while (offset >= 0)
     {
         tmp_result = ret;
@@ -72,107 +71,120 @@ int normalize_values(t_bistromathique bistromathique, t_number *nb_a, t_number *
     if ((nb_a->value = str_prepend(nb_a->value, bistromathique.base[0], nb_a->size)) == NULL)
         return -1;
     nb_a->size += 1;
+    return ratio;
+}
+
+int guess_quotient(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, int offset)
+{
+    int quotient = 0;
+
+    if (get_value(bistromathique, nb_b->value[0]) == get_value(bistromathique, nb_a->value[offset]))
+        quotient = bistromathique.base_length - 1;
+    else
+        quotient = (get_value(bistromathique, nb_a->value[offset]) * bistromathique.base_length +
+                    get_value(bistromathique, nb_a->value[offset + 1])) / get_value(bistromathique, nb_b->value[0]);
+    if (nb_b->size > 1 && get_value(bistromathique, nb_b->value[1]) * quotient >
+                          (get_value(bistromathique, nb_a->value[offset]) * 10 +
+                           get_value(bistromathique, nb_a->value[offset + 1]) -
+                           get_value(bistromathique, nb_b->value[0]) * quotient) * bistromathique.base_length +
+                          get_value(bistromathique, nb_a->value[offset + 2]))
+    {
+        quotient -= 1;
+        if (nb_b->size > 1 && get_value(bistromathique, nb_b->value[1]) * quotient >
+                              (get_value(bistromathique, nb_a->value[offset]) * 10 +
+                               get_value(bistromathique, nb_a->value[offset + 1]) -
+                               get_value(bistromathique, nb_b->value[0]) * quotient) * bistromathique.base_length +
+                              get_value(bistromathique, nb_a->value[offset + 2]))
+            quotient -= 1;
+    }
+    return quotient;
+}
+
+int
+multiply_and_subtract(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, int *quotient_guess, int offset)
+{
+    t_number *quotient = NULL;
+    t_number *subtract = NULL;
+    int difference = 0;
+    int ret = 0;
+    int i = 0;
+
+    quotient = create_number();
+    assign_value_to_number(quotient, &bistromathique.base[*quotient_guess % bistromathique.base_length], 1, SIGN_POS);
+    subtract = multiply_div(bistromathique, nb_b, quotient);
+    while (i < nb_b->size + 1)
+    {
+
+        difference = get_value(bistromathique, nb_a->value[offset + nb_b->size - i]) -
+                     get_value(bistromathique, subtract->value[nb_b->size - i]) - ret;
+        if (difference < 0)
+        {
+            difference += bistromathique.base_length;
+            ret = 1;
+        }
+        else
+            ret = 0;
+        nb_a->value[offset + nb_b->size - i] = bistromathique.base[difference % bistromathique.base_length];
+        i += 1;
+    }
+    if (ret == 1)
+        *quotient_guess -= 1;
+    free_number(quotient);
+    free_number(subtract);
+    return ret;
+}
+
+int rollback(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, int offset)
+{
+    int sum = 0;
+    int ret = 0;
+    int i = 0;
+
+    while (i < nb_b->size)
+    {
+        sum = get_value(bistromathique, nb_a->value[offset + nb_b->size - i]) +
+              get_value(bistromathique, nb_b->value[nb_b->size - 1 - i]) + ret;
+        if (sum > bistromathique.base_length - 1)
+        {
+            sum -= bistromathique.base_length;
+            ret = 1;
+        }
+        else
+            ret = 0;
+        nb_a->value[offset + nb_b->size - i] = sum;
+        i += 1;
+    }
+    if (ret == 1)
+        nb_a->value[offset + nb_b->size - i] =
+                (get_value(bistromathique, nb_a->value[offset + nb_b->size - i]) + 1) % bistromathique.base_length;
     return 0;
 }
 
 t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
 {
-    t_number *tmp = NULL;
-    t_number *res_tmp = NULL;
-    int tmp_result = 0;
     int offset = 0;
-    int iterator = 0;
-    int position_b = 0;
     int guess = 0;
-    int ret;
-    int negativity;
+    int ret = 0;
+    int position = 0;
+    int begin = 0;
 
-    tmp = create_number();
     normalize_values(bistromathique, nb_a, nb_b);
-    while (offset < result->size)
+    while (offset < nb_a->size - nb_b->size)
     {
-        if (get_value(bistromathique, nb_b->value[position_b]) == get_value(bistromathique, nb_a->value[offset]))
-            guess = bistromathique.base_length - 1;
-        else
-            guess = (get_value(bistromathique, nb_a->value[offset]) * bistromathique.base_length +
-                     get_value(bistromathique, nb_a->value[offset + 1])) /
-                    get_value(bistromathique, nb_b->value[position_b]);
-        if (nb_b->size > 1 && get_value(bistromathique, nb_b->value[position_b + 1]) * guess >
-                              (get_value(bistromathique, nb_a->value[offset]) * 10 +
-                               get_value(bistromathique, nb_a->value[offset + 1]) -
-                               get_value(bistromathique, nb_b->value[position_b]) * guess) *
-                              bistromathique.base_length + get_value(bistromathique, nb_a->value[offset + 2]))
-        {
-            guess -= 1;
-            if (nb_b->size > 1 && get_value(bistromathique, nb_b->value[position_b + 1]) * guess >
-                                  (get_value(bistromathique, nb_a->value[offset]) * 10 +
-                                   get_value(bistromathique, nb_a->value[offset + 1]) -
-                                   get_value(bistromathique, nb_b->value[position_b]) * guess) *
-                                  bistromathique.base_length + get_value(bistromathique, nb_a->value[offset + 2]))
-                guess -= 1;
-        }
-        negativity = 0;
+        guess = guess_quotient(bistromathique, nb_a, nb_b, offset);
         if (guess != 0)
-        {
-            assign_value_to_number(tmp, &bistromathique.base[guess % bistromathique.base_length], 1, SIGN_POS);
-            res_tmp = multiply_div(bistromathique, nb_b, tmp);
-            iterator = 0;
-            while (iterator < nb_b->size + 1)
-            {
-                tmp_result = get_value(bistromathique, nb_a->value[offset + nb_b->size - iterator]) -
-                             get_value(bistromathique, res_tmp->value[nb_b->size - iterator]) - negativity;
-                if (tmp_result < 0)
-                {
-                    tmp_result += bistromathique.base_length;
-                    negativity = 1;
-                }
-                else
-                    negativity = 0;
-                nb_a->value[offset + nb_b->size - iterator] = bistromathique.base[tmp_result %
-                                                                                  bistromathique.base_length];
-                iterator += 1;
-            }
-            free_number(res_tmp);
-        }
-        if (negativity == 1)
-        {
-            guess -= 1;
-            ret = 0;
-            iterator = 0;
-            while (iterator < nb_b->size)
-            {
-                tmp_result = get_value(bistromathique, nb_a->value[offset + nb_b->size - iterator]) +
-                             get_value(bistromathique, nb_b->value[nb_b->size - 1 - iterator]) + ret;
-                if (tmp_result > bistromathique.base_length - 1)
-                {
-                    tmp_result -= bistromathique.base_length;
-                    ret = 1;
-                }
-                else
-                    ret = 0;
-                nb_a->value[offset + nb_b->size - iterator] = tmp_result;
-                iterator += 1;
-            }
-            if (ret == 1)
-                nb_a->value[offset + nb_b->size - iterator] =
-                        (get_value(bistromathique, nb_a->value[offset + nb_b->size - iterator]) + 1) %
-                        bistromathique.base_length;
-        }
-        res_tmp = create_number();
-        result->value[offset] = bistromathique.base[guess % bistromathique.base_length];
+            ret = multiply_and_subtract(bistromathique, nb_a, nb_b, &guess, offset);
+        if (ret == 1)
+            rollback(bistromathique, nb_a, nb_b, offset);
+        if (guess != 0)
+            begin = 1;
+        else if (!begin)
+            position += 1;
+        if (begin)
+            result->value[offset - position] = bistromathique.base[guess % bistromathique.base_length];
         offset += 1;
-        assign_value_to_number(res_tmp, nb_a->value, nb_a->size, nb_a->sign);
-        epur_result(bistromathique, res_tmp);
-        if (is_higher(bistromathique, nb_b, res_tmp))
-        {
-            free_number(res_tmp);
-            result->size = offset;
-            break;
-        }
-        free_number(res_tmp);
     }
-    free_number(tmp);
-    result->value[offset] = '\0';
+    result->value[offset - position] = '\0';
     return result;
 }
 
@@ -189,7 +201,7 @@ t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number
         assign_value_to_number(result, "0", 1, SIGN_POS);
         return result;
     }
-    result->size = nb_a->size - nb_b->size + 2;
+    result->size = nb_a->size - nb_b->size + 1;
     if ((result->value = malloc(sizeof(*result->value) * (result->size + 1))) == NULL)
     {
         free_number(result);

@@ -6,6 +6,8 @@ This version of Bistromathique contains the following operations:
 * Infinite addition
 * Infinite subtraction
 * Infinite multiplication
+* Infinite division
+* Infinite modulo
 
 ## Build system
 
@@ -96,9 +98,11 @@ $> echo "(4+5)*2" | ./Bistromathique "0123456789" "()+-*/%" 5
 
 ## Specifications
 
+### Parsing
+
 The program parses the expression using a binary tree.
 For every operator found in the expression, a node is created to store the expression.
-For example if we consider the expression "4+5+(3-7)*2", the tree will look like the following:
+Considering the expression "4+5+(3-7)*2", the obtained expression tree will look like the following:
 
 ```
        4
@@ -111,12 +115,19 @@ For example if we consider the expression "4+5+(3-7)*2", the tree will look like
   \     /
    \   -
     \ / \
-     *    7
+     *   7
       \
         2
 ```
 
+### Computations
+
 The algorithms used in for calculations are standards naive algorithms for the addition and the subtraction.
-They both have a complexity of O(n). In order to improve the computation time of multiplications,
+They both have a complexity of O(n).
+
+In order to improve the computation time of multiplications,
 the Karatsuba algorithm is used. Thus instead of having a complexity of 0(n^2) as with naive multiplication algorithms,
 the complexity is about O(n^log2(3)) which is almost equivalent to O(n^1.585).
+
+Finally, the algorithm used for both the division and the modulo is the "Knuth" long division algorithm as described
+in the book "The art of computer programming volume 2".
