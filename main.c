@@ -14,7 +14,7 @@
 
 /**
  * Checks if the base entered by the user is correct.
- * @param base
+ * @param base: The list of the base digits represented as a string.
  */
 static void check_base(char *base)
 {
@@ -27,7 +27,7 @@ static void check_base(char *base)
 
 /**
  * Checks if the operators entered by the user are correct.
- * @param ops
+ * @param ops: The list of operators represented as a string.
  */
 static void check_ops(char *ops)
 {
@@ -40,7 +40,7 @@ static void check_ops(char *ops)
 
 /**
  * Allocates the memory to store the expression.
- * @param size: The size of the expression to allocate.
+ * @param size: The size of the expression.
  * @return expr
  */
 static char *get_expr(unsigned int size)

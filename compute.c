@@ -15,10 +15,9 @@ compute(t_bistromathique bistromathique, t_operation_list *operation_list, t_exp
     if ((*expression_node)->result->value != NULL)
         return (*expression_node)->result;
     if ((*expression_node)->first != NULL)
-        nb_a = (*expression_node)->first->result = compute(bistromathique, operation_list, &(*expression_node)->first);
+        nb_a = compute(bistromathique, operation_list, &(*expression_node)->first);
     if ((*expression_node)->second != NULL)
-        nb_b = (*expression_node)->second->result = compute(bistromathique, operation_list,
-                                                            &(*expression_node)->second);
+        nb_b = compute(bistromathique, operation_list, &(*expression_node)->second);
     while (operation_list != NULL)
     {
         if (operation_list->operator == (*expression_node)->operator)

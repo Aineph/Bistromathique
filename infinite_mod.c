@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-t_number *infinite_modulo(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+t_number *infinite_mod(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
     t_number *result = NULL;
     t_number *result_div = NULL;

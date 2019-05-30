@@ -230,10 +230,10 @@ t_number *infinite_mul(t_bistromathique, t_number *, t_number *);
 t_number *infinite_div(t_bistromathique, t_number *, t_number *);
 
 /*
- * infinite_modulo.c
+ * infinite_mod.c
  */
 
-t_number *infinite_modulo(t_bistromathique, t_number *, t_number *);
+t_number *infinite_mod(t_bistromathique, t_number *, t_number *);
 
 /*
  * helpers.c

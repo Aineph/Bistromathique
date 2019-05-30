@@ -53,7 +53,7 @@ t_operation_list *init_operation_list(t_bistromathique bistromathique)
         empty_operation_list(operation_list);
         return NULL;
     }
-    if (add_operation_in_list(&operation_list, bistromathique.ops[OP_MOD_IDX], &infinite_modulo) == -1)
+    if (add_operation_in_list(&operation_list, bistromathique.ops[OP_MOD_IDX], &infinite_mod) == -1)
     {
         empty_operation_list(operation_list);
         return NULL;
