@@ -76,7 +76,10 @@ char *str_rpad(char *str, int length, char c, int count)
     int j = 0;
 
     if ((result = malloc(sizeof(*result) * (length + count + 1))) == NULL)
+    {
+        my_putstr(MALLOC_ERROR);
         return NULL;
+    }
     while (str != NULL && i < length)
     {
         result[i] = str[i];

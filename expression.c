@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
+/**
+ * Frees the content of an expression tree.
+ * @param expression_node: A pointer on the root of the expression tree to free.
+ */
 void free_expression(t_expression_tree **expression_node)
 {
     if ((*expression_node)->result->value != NULL)
@@ -27,6 +31,12 @@ void free_expression(t_expression_tree **expression_node)
     }
 }
 
+/**
+ * Creates an expression containing the number on the left of the operator.
+ * @param bistromathique: The bistromathique structure.
+ * @param position: The position of an operator in the arithmetic expression.
+ * @return: The expression containing the left value of the expression.
+ */
 t_expression_tree *parse_left_value(t_bistromathique bistromathique, int position)
 {
     t_expression_tree *left_expression = NULL;
@@ -58,6 +68,12 @@ t_expression_tree *parse_left_value(t_bistromathique bistromathique, int positio
     return left_expression;
 }
 
+/**
+ * Creates an expression containing the number on the right of the operator.
+ * @param bistromathique: The bistromathique structure.
+ * @param position: The position of an operator in the arithmetic expression.
+ * @return: The expression containing the right value of the expression.
+ */
 t_expression_tree *parse_right_value(t_bistromathique bistromathique, int position)
 {
     t_expression_tree *right_expression = NULL;
@@ -89,32 +105,42 @@ t_expression_tree *parse_right_value(t_bistromathique bistromathique, int positi
     return right_expression;
 }
 
+/**
+ * Inserts a newly created node in the tree by taking care of priority operators.
+ * @param bistromathique: The bistromathique structure.
+ * @param root: The root of the expression tree.
+ * @param new_expression_node: The new expression node to insert in the tree.
+ */
 void update_root_expression(t_bistromathique bistromathique, t_expression_tree **root,
-                           t_expression_tree *new_expression_node)
+                            t_expression_tree *new_expression_node)
 {
     if ((*root)->first == NULL || (*root)->second == NULL)
     {
         free_expression(root);
         *root = new_expression_node;
     }
+    else if (is_priority_operator(bistromathique, new_expression_node->operator) &&
+             new_expression_node->level >= (*root)->level)
+    {
+        new_expression_node->first = (*root)->second;
+        (*root)->second = new_expression_node;
+    }
     else
     {
-        if (is_priority_operator(bistromathique, new_expression_node->operator) &&
-            new_expression_node->level >= (*root)->level)
-        {
-            new_expression_node->first = (*root)->second;
-            (*root)->second = new_expression_node;
-        }
-        else
-        {
-            free_expression(&new_expression_node->first);
-            new_expression_node->first = *root;
-            *root = new_expression_node;
-        }
+        free_expression(&new_expression_node->first);
+        new_expression_node->first = *root;
+        *root = new_expression_node;
     }
 }
 
-t_expression_tree *create_expression(t_bistromathique bistromathique, int position, int level)
+/**
+ * Creates an expression node according to the index of an operator within the arithmetic expression.
+ * @param bistromathique: The bistromathique structure.
+ * @param position: The position of an operator in the arithmetic expression.
+ * @param expression_level: The current parenthesis level in the expression.
+ * @return: The newly created node.
+ */
+t_expression_tree *create_expression(t_bistromathique bistromathique, int position, int expression_level)
 {
     t_expression_tree *new_expression_node = NULL;
 
@@ -137,7 +163,7 @@ t_expression_tree *create_expression(t_bistromathique bistromathique, int positi
         return NULL;
     }
     new_expression_node->operator = bistromathique.expr[position];
-    new_expression_node->level = level;
+    new_expression_node->level = expression_level;
     if ((new_expression_node->result = create_number()) == NULL)
         return NULL;
     return new_expression_node;

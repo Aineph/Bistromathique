@@ -25,33 +25,34 @@ void print_expr(t_expression_tree *expression_node)
 }
 
 /**
- * Manages the stack of expressions when a parenthesis is encountered.
+ * Creates an expression and adds it to the expression tree. Manages the expression stack when a parenthesis is found.
  * @param bistromathique: The bistromathique structure.
  * @param expression_stack: The stack of expressions.
  * @param index: The current index in the arithmetic expression.
  * @return: The current parenthesis level in the expression.
  */
-static int manage_parenthesis(t_bistromathique bistromathique, t_expression_stack **expression_stack, int index)
+static int retrieve_expression(t_bistromathique bistromathique, t_expression_stack **expression_stack, int index)
 {
     static int expression_level = 0;
+    t_expression_tree *expression_node = NULL;
 
     if (bistromathique.expr[index] == bistromathique.ops[OP_OPEN_PARENT_IDX])
     {
         expression_level += 1;
         if (create_sub_expression(expression_stack, expression_level) == -1)
-        {
-            empty_expression_stack(expression_stack);
             return -1;
-        }
     }
     else if (bistromathique.expr[index] == bistromathique.ops[OP_CLOSE_PARENT_IDX])
     {
         expression_level -= 1;
         if (merge_expressions(expression_stack) == -1)
-        {
-            empty_expression_stack(expression_stack);
             return -1;
-        }
+    }
+    else
+    {
+        if ((expression_node = create_expression(bistromathique, index, expression_level)) == NULL)
+            return -1;
+        update_root_expression(bistromathique, &(*expression_stack)->expression_root, expression_node);
     }
     return expression_level;
 }
@@ -63,7 +64,6 @@ static int manage_parenthesis(t_bistromathique bistromathique, t_expression_stac
  */
 static t_expression_tree *parse_expr(t_bistromathique bistromathique)
 {
-    t_expression_tree *expression_node = NULL;
     t_expression_stack *expression_stack = NULL;
     int expression_level = 0;
     int index = 0;
@@ -72,21 +72,19 @@ static t_expression_tree *parse_expr(t_bistromathique bistromathique)
         return NULL;
     while (index < bistromathique.size)
     {
-        if (is_parenthesis(bistromathique, bistromathique.expr[index]))
+        if (is_operator(bistromathique, bistromathique.expr[index]) &&
+            (expression_level = retrieve_expression(bistromathique, &expression_stack, index)) == -1)
         {
-            if ((expression_level = manage_parenthesis(bistromathique, &expression_stack, index)) == -1)
-                return NULL;
-        }
-        else if (is_operator(bistromathique, bistromathique.expr[index]))
-        {
-            if ((expression_node = create_expression(bistromathique, index, expression_level)) == NULL)
-            {
-                empty_expression_stack(&expression_stack);
-                return NULL;
-            }
-            update_root_expression(bistromathique, &expression_stack->expression_root, expression_node);
+            empty_expression_stack(&expression_stack);
+            return NULL;
         }
         index += 1;
+    }
+    if (expression_level != 0)
+    {
+        my_putstr(SYNTAXE_ERROR_MSG);
+        empty_expression_stack(&expression_stack);
+        return NULL;
     }
     return expression_stack->expression_root;
 }
