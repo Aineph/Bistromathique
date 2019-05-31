@@ -208,7 +208,7 @@ t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number
         result->sign = SIGN_POS;
     if (is_null(bistromathique, nb_a) || (is_higher(bistromathique, nb_b, nb_a)))
     {
-        assign_value_to_number(result, "0", 1, SIGN_POS);
+        assign_value_to_number(result, &bistromathique.ops[0], 1, SIGN_POS);
         return result;
     }
     result->size = nb_a->size - nb_b->size + 1;
