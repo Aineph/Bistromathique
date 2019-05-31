@@ -43,8 +43,7 @@ t_number *simple_sub(t_bistromathique bistromathique, t_number *nb_a, t_number *
         return NULL;
     if (is_null(bistromathique, nb_a))
     {
-        number_to_negative(nb_b);
-        if (assign_value_to_number(result, nb_b->value, nb_b->size, nb_b->sign) == -1)
+        if (assign_value_to_number(result, nb_b->value, nb_b->size, SIGN_NEG) == -1)
             return NULL;
         return result;
     }
@@ -70,21 +69,21 @@ t_number *infinite_sub(t_bistromathique bistromathique, t_number *nb_a, t_number
 
     if (is_negative(nb_b))
     {
-        number_to_positive(nb_b);
+        nb_b->sign = SIGN_POS;
         result = infinite_add(bistromathique, nb_a, nb_b);
-        number_to_negative(nb_b);
+        nb_b->sign = SIGN_NEG;
     }
     else if (is_higher(bistromathique, nb_b, nb_a))
     {
         if (is_negative(nb_a))
         {
-            number_to_positive(nb_a);
+            nb_a->sign = SIGN_POS;
             result = infinite_add(bistromathique, nb_a, nb_b);
-            number_to_negative(nb_a);
+            nb_a->sign = SIGN_NEG;
         }
         else
             result = simple_sub(bistromathique, nb_b, nb_a);
-        number_to_negative(result);
+        result->sign = SIGN_NEG;
     }
     else
         result = simple_sub(bistromathique, nb_a, nb_b);

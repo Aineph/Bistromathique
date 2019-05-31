@@ -17,22 +17,11 @@ void free_number(t_number *number)
     free(number);
 }
 
-/**
- * Turns a negative number to positive one.
- * @param number: The number to process.
- */
-void number_to_positive(t_number *number)
+void reference_value_to_number(t_number *number, char *value, int size, t_sign sign)
 {
-    number->sign = SIGN_POS;
-}
-
-/**
- * Turns a positive number to a negative one.
- * @param number: The number to process.
- */
-void number_to_negative(t_number *number)
-{
-    number->sign = SIGN_NEG;
+    number->value = value;
+    number->size = size;
+    number->sign = sign;
 }
 
 /**

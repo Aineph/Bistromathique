@@ -66,26 +66,26 @@ t_number *infinite_add(t_bistromathique bistromathique, t_number *nb_a, t_number
 
     if (is_negative(nb_a) && is_negative(nb_b))
     {
-        number_to_positive(nb_a);
-        number_to_positive(nb_b);
+        nb_a->sign = SIGN_POS;
+        nb_b->sign = SIGN_POS;
         result = simple_add(bistromathique, nb_a, nb_b);
-        number_to_negative(nb_a);
-        number_to_negative(nb_b);
-        number_to_negative(result);
+        nb_a->sign = SIGN_NEG;
+        nb_b->sign = SIGN_NEG;
+        result->sign = SIGN_NEG;
     }
     else if (is_negative(nb_a) || is_negative(nb_b))
     {
         if (is_higher(bistromathique, nb_a, nb_b))
         {
-            number_to_positive(nb_b);
+            nb_b->sign = SIGN_POS;
             result = infinite_sub(bistromathique, nb_a, nb_b);
-            number_to_negative(nb_b);
+            nb_b->sign = SIGN_NEG;
         }
         else
         {
-            number_to_positive(nb_a);
+            nb_a->sign = SIGN_POS;
             result = infinite_sub(bistromathique, nb_b, nb_a);
-            number_to_negative(nb_a);
+            nb_a->sign = SIGN_NEG;
         }
     }
     else

@@ -91,7 +91,7 @@ t_number *perform_multiplication(t_bistromathique bistromathique, t_number *nb_a
     epur_result(bistromathique, result);
     result->sign = SIGN_POS;
     if ((is_negative(nb_a) || is_negative(nb_b)) && nb_a->sign != nb_b->sign)
-        number_to_negative(result);
+        result->sign = SIGN_NEG;
     return result;
 }
 

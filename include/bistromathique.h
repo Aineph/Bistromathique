@@ -175,9 +175,7 @@ t_operation_map *init_operation_map(t_bistromathique);
 
 void free_number(t_number *);
 
-void number_to_positive(t_number *);
-
-void number_to_negative(t_number *);
+void reference_value_to_number(t_number *, char *, int, t_sign);
 
 int assign_value_to_number(t_number *, char *, int, t_sign sign);
 

@@ -44,7 +44,7 @@ t_number *multiply_div(t_bistromathique bistromathique, t_number *nb_a, t_number
     }
     result->sign = SIGN_POS;
     if ((is_negative(nb_a) || is_negative(nb_b)) && nb_a->sign != nb_b->sign)
-        number_to_negative(result);
+        result->sign = SIGN_NEG;
     return result;
 }
 
@@ -59,14 +59,14 @@ int normalize_values(t_bistromathique bistromathique, t_number *nb_a, t_number *
     if (ratio != 1)
     {
         ratio_number = create_number();
-        assign_value_to_number(ratio_number, &bistromathique.base[ratio % bistromathique.base_length], 1, SIGN_POS);
+        reference_value_to_number(ratio_number, &bistromathique.base[ratio % bistromathique.base_length], 1, SIGN_POS);
         normalized_value = simple_mul(bistromathique, nb_a, ratio_number);
         assign_value_to_number(nb_a, normalized_value->value, normalized_value->size, normalized_value->sign);
         free_number(normalized_value);
         normalized_value = simple_mul(bistromathique, nb_b, ratio_number);
         assign_value_to_number(nb_b, normalized_value->value, normalized_value->size, normalized_value->sign);
         free_number(normalized_value);
-        free_number(ratio_number);
+        free(ratio_number);
     }
     if ((nb_a->value = str_prepend(nb_a->value, bistromathique.base[0], nb_a->size)) == NULL)
         return -1;
@@ -110,7 +110,7 @@ multiply_and_subtract(t_bistromathique bistromathique, t_number *nb_a, t_number 
     int i = 0;
 
     quotient = create_number();
-    assign_value_to_number(quotient, &bistromathique.base[*quotient_guess % bistromathique.base_length], 1, SIGN_POS);
+    reference_value_to_number(quotient, &bistromathique.base[*quotient_guess % bistromathique.base_length], 1, SIGN_POS);
     subtract = multiply_div(bistromathique, nb_b, quotient);
     while (i < nb_b->size + 1)
     {
@@ -129,8 +129,8 @@ multiply_and_subtract(t_bistromathique bistromathique, t_number *nb_a, t_number 
     }
     if (ret == 1)
         *quotient_guess -= 1;
-    free_number(quotient);
     free_number(subtract);
+    free(quotient);
     return ret;
 }
 
@@ -201,11 +201,10 @@ t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number
         return NULL;
     if (nb_a_sign != nb_b_sign)
     {
-        nb_a->sign = nb_b_sign;
+        nb_a->sign = SIGN_POS;
+        nb_b->sign = SIGN_POS;
         result->sign = SIGN_NEG;
     }
-    else
-        result->sign = SIGN_POS;
     if (is_null(bistromathique, nb_a) || (is_higher(bistromathique, nb_b, nb_a)))
     {
         assign_value_to_number(result, &bistromathique.ops[0], 1, SIGN_POS);
@@ -219,6 +218,8 @@ t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number
         return NULL;
     }
     result = simple_div(bistromathique, nb_a, nb_b, result);
+    nb_a->sign = nb_a_sign;
+    nb_b->sign = nb_b_sign;
     epur_result(bistromathique, result);
     return result;
 }
