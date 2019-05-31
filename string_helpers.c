@@ -143,7 +143,12 @@ char *str_to_val(t_bistromathique bistromathique, const char *source, int length
     }
     while (index < length)
     {
-        result[index] = get_value(bistromathique, source[index]);
+        if ((result[index] = get_value(bistromathique, source[index])) == -1)
+        {
+            my_putstr(SYNTAXE_ERROR_MSG);
+            free(result);
+            return NULL;
+        }
         index += 1;
     }
     result[index] = '\0';
