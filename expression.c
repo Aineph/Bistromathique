@@ -12,7 +12,7 @@
  */
 void free_expression(t_expression_tree **expression_node)
 {
-    if ((*expression_node)->result->value != NULL)
+    if ((*expression_node)->result != NULL)
     {
         free_number((*expression_node)->result);
         return;

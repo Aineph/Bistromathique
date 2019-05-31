@@ -187,7 +187,10 @@ t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number
     t_sign nb_b_sign = nb_b->sign;
 
     if (is_null(nb_b))
+    {
+        my_putstr(ZERO_DIVISION_ERROR);
         return NULL;
+    }
     if ((result = create_number()) == NULL)
         return NULL;
     if (nb_a_sign != nb_b_sign)

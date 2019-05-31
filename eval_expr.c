@@ -131,7 +131,12 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
         empty_operation_map(operation_map);
         return NULL;
     }
-    result = compute(bistromathique, operation_map, &expression_root);
+    if ((result = compute(bistromathique, operation_map, &expression_root)) == NULL)
+    {
+        empty_operation_map(operation_map);
+        free_expression(&expression_root);
+        return NULL;
+    }
     result->value = val_to_str(bistromathique, result->value, result->size);
     if (result->sign == SIGN_NEG)
         result->value = str_prepend(result->value, bistromathique.ops[OP_NEG_IDX], result->size);

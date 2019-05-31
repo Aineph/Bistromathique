@@ -33,6 +33,7 @@
 # define MALLOC_ERROR "could not alloc\n"
 # define OPS_ERROR "Bad ops\n"
 # define BASE_ERROR "Bad base\n"
+# define ZERO_DIVISION_ERROR "Division by zero\n"
 
 /*
  * Macros
