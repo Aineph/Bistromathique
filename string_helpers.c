@@ -123,3 +123,43 @@ char *str_rpad(char *str, int length, char c, int count)
         free(str);
     return result;
 }
+
+char *str_to_val(t_bistromathique bistromathique, const char *source, int length)
+{
+    char *result = NULL;
+    int index = 0;
+
+    if ((result = malloc(sizeof(*result) * (length + 1))) == NULL)
+    {
+        my_putstr(MALLOC_ERROR);
+        return NULL;
+    }
+    while (index < length)
+    {
+        result[index] = get_value(bistromathique, source[index]);
+        index += 1;
+    }
+    result[index] = '\0';
+    return result;
+}
+
+char *val_to_str(t_bistromathique bistromathique, char *source, int length)
+{
+    char *result = NULL;
+    int index = 0;
+
+    if ((result = malloc(sizeof(*result) * (length + 1))) == NULL)
+    {
+        my_putstr(MALLOC_ERROR);
+        return NULL;
+    }
+    while (index < length)
+    {
+        result[index] = bistromathique.base[source[index]];
+        index += 1;
+    }
+    result[index] = '\0';
+    if (source != NULL)
+        free(source);
+    return result;
+}

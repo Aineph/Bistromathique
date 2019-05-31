@@ -132,6 +132,7 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
         return NULL;
     }
     result = compute(bistromathique, operation_map, &expression_root);
+    result->value = val_to_str(bistromathique, result->value, result->size);
     if (result->sign == SIGN_NEG)
         result->value = str_prepend(result->value, bistromathique.ops[OP_NEG_IDX], result->size);
     return result->value;

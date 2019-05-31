@@ -84,7 +84,7 @@ static t_expression_tree *parse_right_value(t_bistromathique bistromathique, int
         free(right_expression);
         return NULL;
     }
-    if (assign_value_to_number(right_expression->result, &bistromathique.expr[position + 1], size, SIGN_POS) == -1)
+    if (expr_to_number(bistromathique, right_expression->result, &bistromathique.expr[position + 1], size) == -1)
     {
         free_number(right_expression->result);
         free(right_expression);
@@ -121,7 +121,7 @@ static t_expression_tree *parse_left_value(t_bistromathique bistromathique, int 
         free(left_expression);
         return NULL;
     }
-    if (assign_value_to_number(left_expression->result, &bistromathique.expr[i + 1], size, SIGN_POS) == -1)
+    if (expr_to_number(bistromathique, left_expression->result, &bistromathique.expr[i + 1], size) == -1)
     {
         free_number(left_expression->result);
         free(left_expression);

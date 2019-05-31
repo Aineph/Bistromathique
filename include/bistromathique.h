@@ -175,9 +175,9 @@ t_operation_map *init_operation_map(t_bistromathique);
 
 void free_number(t_number *);
 
-void reference_value_to_number(t_number *, char *, int, t_sign);
-
 int assign_value_to_number(t_number *, char *, int, t_sign sign);
+
+int expr_to_number(t_bistromathique, t_number *, char *, int);
 
 t_number *create_number(void);
 
@@ -241,9 +241,9 @@ int get_value(t_bistromathique, char);
 
 int is_negative(t_number *);
 
-int is_null(t_bistromathique, t_number *);
+int is_null(t_number *);
 
-int is_higher(t_bistromathique, t_number *, t_number *);
+int is_higher(t_number *, t_number *);
 
 int epur_result(t_bistromathique, t_number *);
 
@@ -258,6 +258,10 @@ char *str_prepend(char *, char, int);
 char *str_slice(char *, int, int);
 
 char *str_rpad(char *, int, char, int);
+
+char *str_to_val(t_bistromathique, const char *, int);
+
+char *val_to_str(t_bistromathique, char *, int);
 
 /*
  * parsing_helpers.c

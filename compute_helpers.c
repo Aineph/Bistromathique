@@ -24,7 +24,7 @@ int is_negative(t_number *number)
  * @param number: The number to process.
  * @return: A positive value if the given number is equal to zero. Zero if not.
  */
-int is_null(t_bistromathique bistromathique, t_number *number)
+int is_null(t_number *number)
 {
     int index = 0;
 
@@ -34,7 +34,7 @@ int is_null(t_bistromathique bistromathique, t_number *number)
         return 1;
     while (index < number->size)
     {
-        if (number->value[index] != bistromathique.base[0])
+        if (number->value[index] != 0)
             return 0;
         index += 1;
     }
@@ -48,7 +48,7 @@ int is_null(t_bistromathique bistromathique, t_number *number)
  * @param nb_b: The second number to compare.
  * @return: A positive value if the first number is greater than the second. Zero if not.
  */
-int is_higher(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+int is_higher(t_number *nb_a, t_number *nb_b)
 {
     int index = 0;
 
@@ -63,14 +63,14 @@ int is_higher(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
     while (index < nb_a->size)
     {
         if ((is_negative(nb_a) &&
-             get_value(bistromathique, nb_a->value[index]) < get_value(bistromathique, nb_b->value[index])) ||
+             nb_a->value[index] < nb_b->value[index]) ||
             (!is_negative(nb_a) &&
-             get_value(bistromathique, nb_a->value[index]) > get_value(bistromathique, nb_b->value[index])))
+             nb_a->value[index] > nb_b->value[index]))
             return 1;
         else if ((is_negative(nb_a) &&
-                  get_value(bistromathique, nb_a->value[index]) > get_value(bistromathique, nb_b->value[index])) ||
+                  nb_a->value[index] > nb_b->value[index]) ||
                  (!is_negative(nb_a) &&
-                  get_value(bistromathique, nb_a->value[index]) < get_value(bistromathique, nb_b->value[index])))
+                  nb_a->value[index] < nb_b->value[index]))
             return 0;
         index += 1;
     }
@@ -87,12 +87,12 @@ int epur_result(t_bistromathique bistromathique, t_number *number)
 {
     int index = 0;
 
-    while (index < number->size && number->value[index] == bistromathique.base[0])
+    while (index < number->size && number->value[index] == 0)
         index += 1;
     if (index > 0 && (number->value = str_slice(number->value, index, number->size)) == NULL)
         return -1;
     number->size -= index;
     if (number->size == 0 && index > 0)
-        assign_value_to_number(number, &bistromathique.ops[0], 1, SIGN_POS);
+        expr_to_number(bistromathique, number, &bistromathique.base[0], 1);
     return 0;
 }

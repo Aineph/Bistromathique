@@ -31,7 +31,7 @@ t_multiplication init_multiplication(t_bistromathique bistromathique, t_number *
     multiplication.a2 = create_number();
     if (nb_a->size <= multiplication.middle)
     {
-        assign_value_to_number(multiplication.high_a, &bistromathique.ops[0], 1, SIGN_POS);
+        expr_to_number(bistromathique, multiplication.high_a, &bistromathique.base[0], 1);
         assign_value_to_number(multiplication.low_a, nb_a->value, nb_a->size, nb_a->sign);
     }
     else
@@ -42,7 +42,7 @@ t_multiplication init_multiplication(t_bistromathique bistromathique, t_number *
     }
     if (nb_b->size <= multiplication.middle)
     {
-        assign_value_to_number(multiplication.high_b, &bistromathique.ops[0], 1, SIGN_POS);
+        expr_to_number(bistromathique, multiplication.high_b, &bistromathique.base[0], 1);
         assign_value_to_number(multiplication.low_b, nb_b->value, nb_b->size, nb_b->sign);
     }
     else
@@ -79,12 +79,11 @@ t_number *perform_multiplication(t_bistromathique bistromathique, t_number *nb_a
         }
         while (position_a <= result->size - offset && position_a <= nb_a->size)
         {
-            tmp_result += (get_value(bistromathique, nb_a->value[nb_a->size - position_a]) *
-                           get_value(bistromathique, nb_b->value[nb_b->size - position_b]));
+            tmp_result += (nb_a->value[nb_a->size - position_a] * nb_b->value[nb_b->size - position_b]);
             position_a += 1;
             position_b -= 1;
         }
-        result->value[offset] = bistromathique.base[tmp_result % bistromathique.base_length];
+        result->value[offset] = tmp_result % bistromathique.base_length;
         ret = tmp_result / bistromathique.base_length;
         offset -= 1;
     }
@@ -119,25 +118,25 @@ t_number *recursive_mul(t_bistromathique bistromathique, t_number *nb_a, t_numbe
     multiplication = init_multiplication(bistromathique, nb_a, nb_b);
     a1_a = infinite_sub(bistromathique, multiplication.high_a, multiplication.low_a);
     a1_b = infinite_sub(bistromathique, multiplication.high_b, multiplication.low_b);
-    if (is_null(bistromathique, multiplication.high_a) || is_null(bistromathique, multiplication.high_b))
-        assign_value_to_number(multiplication.a0, &bistromathique.ops[0], 1, SIGN_POS);
+    if (is_null(multiplication.high_a) || is_null(multiplication.high_b))
+        expr_to_number(bistromathique, multiplication.a0, &bistromathique.base[0], 1);
     else
         multiplication.a0 = recursive_mul(bistromathique, multiplication.high_a, multiplication.high_b);
-    if (is_null(bistromathique, a1_a) || is_null(bistromathique, a1_b))
-        assign_value_to_number(multiplication.a1, &bistromathique.ops[0], 1, SIGN_POS);
+    if (is_null(a1_a) || is_null(a1_b))
+        expr_to_number(bistromathique, multiplication.a1, &bistromathique.base[0], 1);
     else
         multiplication.a1 = recursive_mul(bistromathique, a1_a, a1_b);
-    if (is_null(bistromathique, multiplication.low_a) || is_null(bistromathique, multiplication.low_b))
-        assign_value_to_number(multiplication.a2, &bistromathique.ops[0], 1, SIGN_POS);
+    if (is_null(multiplication.low_a) || is_null(multiplication.low_b))
+        expr_to_number(bistromathique, multiplication.a2, &bistromathique.base[0], 1);
     else
         multiplication.a2 = recursive_mul(bistromathique, multiplication.low_a, multiplication.low_b);
     tmp_result = infinite_add(bistromathique, multiplication.a0, multiplication.a2);
     result = infinite_sub(bistromathique, tmp_result, multiplication.a1);
     free_number(tmp_result);
-    multiplication.a0->value = str_rpad(multiplication.a0->value, multiplication.a0->size, bistromathique.base[0],
+    multiplication.a0->value = str_rpad(multiplication.a0->value, multiplication.a0->size, 0,
                                         multiplication.middle + multiplication.middle);
     multiplication.a0->size += (multiplication.middle + multiplication.middle);
-    result->value = str_rpad(result->value, result->size, bistromathique.base[0], multiplication.middle);
+    result->value = str_rpad(result->value, result->size, 0, multiplication.middle);
     result->size += multiplication.middle;
     tmp_result = infinite_add(bistromathique, multiplication.a0, result);
     result = infinite_add(bistromathique, tmp_result, multiplication.a2);

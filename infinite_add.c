@@ -18,15 +18,15 @@ t_number *perform_addition(t_bistromathique bistromathique, t_number *nb_a, t_nu
     {
         tmp_result = 0;
         if (nb_a->size - position >= 0)
-            tmp_result += get_value(bistromathique, nb_a->value[nb_a->size - position]);
+            tmp_result += nb_a->value[nb_a->size - position];
         if (nb_b->size - position >= 0)
-            tmp_result += get_value(bistromathique, nb_b->value[nb_b->size - position]);
+            tmp_result += nb_b->value[nb_b->size - position];
         tmp_result += ret;
         ret = tmp_result / bistromathique.base_length;
-        result->value[offset--] = bistromathique.base[tmp_result % bistromathique.base_length];
+        result->value[offset--] = tmp_result % bistromathique.base_length;
         position += 1;
     }
-    result->value[offset] = bistromathique.base[ret];
+    result->value[offset] = ret;
     if (epur_result(bistromathique, result) == -1)
         return NULL;
     return result;
@@ -38,13 +38,13 @@ t_number *simple_add(t_bistromathique bistromathique, t_number *nb_a, t_number *
 
     if ((result = create_number()) == NULL)
         return NULL;
-    if (is_null(bistromathique, nb_a))
+    if (is_null(nb_a))
     {
         if (assign_value_to_number(result, nb_b->value, nb_b->size, nb_b->sign) == -1)
             return NULL;
         return result;
     }
-    if (is_null(bistromathique, nb_b))
+    if (is_null(nb_b))
     {
         if (assign_value_to_number(result, nb_a->value, nb_a->size, nb_a->sign) == -1)
             return NULL;
@@ -75,7 +75,7 @@ t_number *infinite_add(t_bistromathique bistromathique, t_number *nb_a, t_number
     }
     else if (is_negative(nb_a) || is_negative(nb_b))
     {
-        if (is_higher(bistromathique, nb_a, nb_b))
+        if (is_higher(nb_a, nb_b))
         {
             nb_b->sign = SIGN_POS;
             result = infinite_sub(bistromathique, nb_a, nb_b);

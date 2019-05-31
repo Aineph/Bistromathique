@@ -44,6 +44,18 @@ int assign_value_to_number(t_number *number, char *value, int size, t_sign sign)
     return 0;
 }
 
+int expr_to_number(t_bistromathique bistromathique, t_number *number, char *value, int size)
+{
+    if (number->value != NULL)
+        free(number->value);
+    number->size = 0;
+    if ((number->value = str_to_val(bistromathique, value, size)) == NULL)
+        return -1;
+    number->size = size;
+    number->sign = SIGN_POS;
+    return 0;
+}
+
 /**
  * Creates an empty number with default values.
  * @return: The number created.
