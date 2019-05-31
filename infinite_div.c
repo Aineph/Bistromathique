@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-t_number *multiply_div(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+static t_number *multiply_div(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
     t_number *result;
     int tmp_result = 0;
@@ -47,7 +47,7 @@ t_number *multiply_div(t_bistromathique bistromathique, t_number *nb_a, t_number
     return result;
 }
 
-int normalize_values(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+static int normalize_values(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
     t_number *normalized_value = NULL;
     t_number *ratio_number = NULL;
@@ -73,7 +73,7 @@ int normalize_values(t_bistromathique bistromathique, t_number *nb_a, t_number *
     return ratio;
 }
 
-int guess_quotient(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, int offset)
+static int guess_quotient(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, int offset)
 {
     int quotient = 0;
 
@@ -94,7 +94,7 @@ int guess_quotient(t_bistromathique bistromathique, t_number *nb_a, t_number *nb
     return quotient;
 }
 
-int
+static int
 multiply_and_subtract(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, int *quotient_guess, int offset)
 {
     t_number *quotient = NULL;
@@ -127,7 +127,7 @@ multiply_and_subtract(t_bistromathique bistromathique, t_number *nb_a, t_number 
     return ret;
 }
 
-int rollback(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, int offset)
+static int rollback(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, int offset)
 {
     int sum = 0;
     int ret = 0;
@@ -151,7 +151,7 @@ int rollback(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, in
     return 0;
 }
 
-t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
+static t_number *simple_div(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
 {
     int offset = 0;
     int guess = 0;
@@ -214,6 +214,6 @@ t_number *infinite_div(t_bistromathique bistromathique, t_number *nb_a, t_number
     result = simple_div(bistromathique, nb_a, nb_b, result);
     nb_a->sign = nb_a_sign;
     nb_b->sign = nb_b_sign;
-    epur_result(bistromathique, result);
+    remove_leading_zeros(result);
     return result;
 }

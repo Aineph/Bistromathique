@@ -73,13 +73,13 @@ int is_higher(t_number *nb_a, t_number *nb_b)
 
 /**
  * Removes the leading zeros of a number.
- * @param bistromathique: The bistromathique structure.
  * @param result: The number to process.
  * @return: A negative value if an error occurs. Zero if the removal completes successfully.
  */
-int epur_result(t_bistromathique bistromathique, t_number *number)
+int remove_leading_zeros(t_number *number)
 {
     int index = 0;
+    char zero = 0;
 
     while (index < number->size && number->value[index] == 0)
         index += 1;
@@ -87,6 +87,7 @@ int epur_result(t_bistromathique bistromathique, t_number *number)
         return -1;
     number->size -= index;
     if (number->size == 0 && index > 0)
-        expr_to_number(bistromathique, number, &bistromathique.base[0], 1);
+        if (copy_number(number, &zero, 1, SIGN_POS) == -1)
+            return -1;
     return 0;
 }

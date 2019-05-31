@@ -77,6 +77,26 @@ typedef struct s_number
 } t_number;
 
 /**
+ * @typedef t_addition
+ * The necessary variables needed to perform the addition algorithm.
+ * @var nb_a: The first number.
+ * @var nb_b: The second number.
+ * @var result: The result.
+ * @var sum: The temporary sum.
+ * @var carry: The temporary carry.
+ * @var base: The base of computation.
+ */
+typedef struct s_addition
+{
+    t_number *nb_a;
+    t_number *nb_b;
+    t_number *result;
+    int sum;
+    int carry;
+    int base;
+} t_addition;
+
+/**
  * @typedef t_multiplication
  * The necessary variables needed to perform the multiplication algorithm.
  * @var middle: The middle offset of the numbers.
@@ -178,6 +198,8 @@ void free_number(t_number *);
 
 int copy_number(t_number *, char *, int, t_sign sign);
 
+void reference_number(t_number *, char *, int, t_sign);
+
 int expr_to_number(t_bistromathique, t_number *, char *, int);
 
 t_number *create_number(void);
@@ -192,15 +214,11 @@ t_number *compute(t_bistromathique, t_operation_map *, t_expression_tree **);
  * infinite_add.c
  */
 
-t_number *simple_add(t_bistromathique, t_number *, t_number *);
-
 t_number *infinite_add(t_bistromathique, t_number *, t_number *);
 
 /*
  * infinite_sub.c
  */
-
-t_number *simple_sub(t_bistromathique, t_number *, t_number *);
 
 t_number *infinite_sub(t_bistromathique, t_number *, t_number *);
 
@@ -246,7 +264,7 @@ int is_null(t_number *);
 
 int is_higher(t_number *, t_number *);
 
-int epur_result(t_bistromathique, t_number *);
+int remove_leading_zeros(t_number *);
 
 /*
  * string_helpers.c

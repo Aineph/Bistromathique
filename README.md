@@ -130,4 +130,4 @@ the Karatsuba algorithm is used. Thus instead of having a complexity of 0(n^2) a
 the complexity is about O(n^log2(3)) which is almost equivalent to O(n^1.585).
 
 Finally, the algorithm used for both the division and the modulo is the "Knuth" long division algorithm as described
-in the book "The art of computer programming, Vol. 2".
+in the book "The art of computer programming, Vol. 2" in the section 4.3.1.

@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-void free_multiplication(t_multiplication multiplication)
+static void free_multiplication(t_multiplication multiplication)
 {
     free_number(multiplication.high_a);
     free_number(multiplication.low_a);
@@ -17,7 +17,7 @@ void free_multiplication(t_multiplication multiplication)
     free_number(multiplication.a2);
 }
 
-t_multiplication init_multiplication(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+static t_multiplication init_multiplication(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
     t_multiplication multiplication;
 
@@ -51,14 +51,15 @@ t_multiplication init_multiplication(t_bistromathique bistromathique, t_number *
         copy_number(multiplication.low_b, &nb_b->value[nb_b->size - multiplication.middle], multiplication.middle,
                     nb_b->sign);
     }
-    epur_result(bistromathique, multiplication.high_a);
-    epur_result(bistromathique, multiplication.low_a);
-    epur_result(bistromathique, multiplication.high_b);
-    epur_result(bistromathique, multiplication.low_b);
+    remove_leading_zeros(multiplication.high_a);
+    remove_leading_zeros(multiplication.low_a);
+    remove_leading_zeros(multiplication.high_b);
+    remove_leading_zeros(multiplication.low_b);
     return multiplication;
 }
 
-t_number *perform_multiplication(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
+static t_number *
+perform_multiplication(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
 {
     int offset = result->size;
     int tmp_result = 0;
@@ -87,7 +88,7 @@ t_number *perform_multiplication(t_bistromathique bistromathique, t_number *nb_a
         ret = tmp_result / bistromathique.base_length;
         offset -= 1;
     }
-    epur_result(bistromathique, result);
+    remove_leading_zeros(result);
     result->sign = SIGN_POS;
     if ((is_negative(nb_a) || is_negative(nb_b)) && nb_a->sign != nb_b->sign)
         result->sign = SIGN_NEG;
@@ -105,7 +106,7 @@ t_number *simple_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *
     return perform_multiplication(bistromathique, nb_a, nb_b, result);
 }
 
-t_number *recursive_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+static t_number *recursive_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
     t_multiplication multiplication;
     t_number *result;

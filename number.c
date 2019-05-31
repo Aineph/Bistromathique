@@ -38,6 +38,25 @@ int copy_number(t_number *number, char *value, int size, t_sign sign)
 }
 
 /**
+ * Copies contents in a given number without allocating it. Also remove every leading zeros.
+ * @param number: The number to process.
+ * @param value: The value to assign to the given number.
+ * @param size: The size to assign to the given number.
+ * @param sign: The sign to assign to the given number.
+ */
+void reference_number(t_number *number, char *value, int size, t_sign sign)
+{
+    int index = 0;
+
+    number->size = size;
+    while (index < size && value[index] == 0)
+        index += 1;
+    number->size -= index;
+    number->value = &value[index];
+    number->sign = sign;
+}
+
+/**
  * Converts a printable string to a number.
  * @param bistromathique: The bistromathique structure.
  * @param number: The number to process.

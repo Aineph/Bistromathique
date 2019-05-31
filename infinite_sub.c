@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-t_number *perform_substraction(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
+static t_number *perform_substraction(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
 {
     int offset = result->size;
     int ret = 0;
@@ -30,12 +30,12 @@ t_number *perform_substraction(t_bistromathique bistromathique, t_number *nb_a, 
         result->value[offset--] = tmp_result % bistromathique.base_length;
         position += 1;
     }
-    if (epur_result(bistromathique, result) == -1)
+    if (remove_leading_zeros(result) == -1)
         return NULL;
     return result;
 }
 
-t_number *simple_sub(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+static t_number *simple_sub(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
     t_number *result = NULL;
 
