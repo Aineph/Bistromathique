@@ -43,13 +43,13 @@ t_number *simple_sub(t_bistromathique bistromathique, t_number *nb_a, t_number *
         return NULL;
     if (is_null(nb_a))
     {
-        if (assign_value_to_number(result, nb_b->value, nb_b->size, SIGN_NEG) == -1)
+        if (copy_number(result, nb_b->value, nb_b->size, SIGN_NEG) == -1)
             return NULL;
         return result;
     }
     if (is_null(nb_b))
     {
-        if (assign_value_to_number(result, nb_a->value, nb_a->size, nb_a->sign) == -1)
+        if (copy_number(result, nb_a->value, nb_a->size, nb_a->sign) == -1)
             return NULL;
         return result;
     }

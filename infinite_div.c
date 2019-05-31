@@ -60,10 +60,10 @@ int normalize_values(t_bistromathique bistromathique, t_number *nb_a, t_number *
         ratio_number = create_number();
         expr_to_number(bistromathique, ratio_number, &bistromathique.base[ratio % bistromathique.base_length], 1);
         normalized_value = simple_mul(bistromathique, nb_a, ratio_number);
-        assign_value_to_number(nb_a, normalized_value->value, normalized_value->size, normalized_value->sign);
+        copy_number(nb_a, normalized_value->value, normalized_value->size, normalized_value->sign);
         free_number(normalized_value);
         normalized_value = simple_mul(bistromathique, nb_b, ratio_number);
-        assign_value_to_number(nb_b, normalized_value->value, normalized_value->size, normalized_value->sign);
+        copy_number(nb_b, normalized_value->value, normalized_value->size, normalized_value->sign);
         free_number(normalized_value);
         free_number(ratio_number);
     }

@@ -175,7 +175,7 @@ t_operation_map *init_operation_map(t_bistromathique);
 
 void free_number(t_number *);
 
-int assign_value_to_number(t_number *, char *, int, t_sign sign);
+int copy_number(t_number *, char *, int, t_sign sign);
 
 int expr_to_number(t_bistromathique, t_number *, char *, int);
 

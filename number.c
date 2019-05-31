@@ -17,22 +17,15 @@ void free_number(t_number *number)
     free(number);
 }
 
-void reference_value_to_number(t_number *number, char *value, int size, t_sign sign)
-{
-    number->value = value;
-    number->size = size;
-    number->sign = sign;
-}
-
 /**
- * Assigns a value to a given number.
+ * Copies contents in a given number.
  * @param number: The number to process.
  * @param value: The value to assign to the given number.
  * @param size: The size to assign to the given number.
  * @param sign: The sign to assign to the given number.
  * @return: A negative value if an error occurs. Zero if the assignment completes successfully.
  */
-int assign_value_to_number(t_number *number, char *value, int size, t_sign sign)
+int copy_number(t_number *number, char *value, int size, t_sign sign)
 {
     if (number->value != NULL)
         free(number->value);
@@ -44,6 +37,14 @@ int assign_value_to_number(t_number *number, char *value, int size, t_sign sign)
     return 0;
 }
 
+/**
+ * Converts a printable string to a number.
+ * @param bistromathique: The bistromathique structure.
+ * @param number: The number to process.
+ * @param value: The value to convert and assign to the given number.
+ * @param size: The size to assign to the given number.
+ * @return: A negative value if an error occurs. Zero if the assignment completes successfully.
+ */
 int expr_to_number(t_bistromathique bistromathique, t_number *number, char *value, int size)
 {
     if (number->value != NULL)

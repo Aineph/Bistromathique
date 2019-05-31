@@ -124,6 +124,13 @@ char *str_rpad(char *str, int length, char c, int count)
     return result;
 }
 
+/**
+ * Change the content of a string to its numerical value in a char array.
+ * @param bistromathique: The bistromathique structure.
+ * @param source: The string to process.
+ * @param length: The length of the string to process.
+ * @return: A char array containing numerical values.
+ */
 char *str_to_val(t_bistromathique bistromathique, const char *source, int length)
 {
     char *result = NULL;
@@ -143,6 +150,13 @@ char *str_to_val(t_bistromathique bistromathique, const char *source, int length
     return result;
 }
 
+/**
+ * Change the content of a char array to its printable value in a string.
+ * @param bistromathique: The bistromathique structure.
+ * @param source: The string to process.
+ * @param length: The length of the string to process.
+ * @return: A string containing printable values.
+ */
 char *val_to_str(t_bistromathique bistromathique, char *source, int length)
 {
     char *result = NULL;

@@ -32,24 +32,24 @@ t_multiplication init_multiplication(t_bistromathique bistromathique, t_number *
     if (nb_a->size <= multiplication.middle)
     {
         expr_to_number(bistromathique, multiplication.high_a, &bistromathique.base[0], 1);
-        assign_value_to_number(multiplication.low_a, nb_a->value, nb_a->size, nb_a->sign);
+        copy_number(multiplication.low_a, nb_a->value, nb_a->size, nb_a->sign);
     }
     else
     {
-        assign_value_to_number(multiplication.high_a, nb_a->value, nb_a->size - multiplication.middle, nb_a->sign);
-        assign_value_to_number(multiplication.low_a, &nb_a->value[nb_a->size - multiplication.middle],
-                               multiplication.middle, nb_a->sign);
+        copy_number(multiplication.high_a, nb_a->value, nb_a->size - multiplication.middle, nb_a->sign);
+        copy_number(multiplication.low_a, &nb_a->value[nb_a->size - multiplication.middle], multiplication.middle,
+                    nb_a->sign);
     }
     if (nb_b->size <= multiplication.middle)
     {
         expr_to_number(bistromathique, multiplication.high_b, &bistromathique.base[0], 1);
-        assign_value_to_number(multiplication.low_b, nb_b->value, nb_b->size, nb_b->sign);
+        copy_number(multiplication.low_b, nb_b->value, nb_b->size, nb_b->sign);
     }
     else
     {
-        assign_value_to_number(multiplication.high_b, nb_b->value, nb_b->size - multiplication.middle, nb_b->sign);
-        assign_value_to_number(multiplication.low_b, &nb_b->value[nb_b->size - multiplication.middle],
-                               multiplication.middle, nb_b->sign);
+        copy_number(multiplication.high_b, nb_b->value, nb_b->size - multiplication.middle, nb_b->sign);
+        copy_number(multiplication.low_b, &nb_b->value[nb_b->size - multiplication.middle], multiplication.middle,
+                    nb_b->sign);
     }
     epur_result(bistromathique, multiplication.high_a);
     epur_result(bistromathique, multiplication.low_a);

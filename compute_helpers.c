@@ -20,7 +20,6 @@ int is_negative(t_number *number)
 
 /**
  * Checks if a number is equal to zero.
- * @param bistromathique: The bistromathique structure.
  * @param number: The number to process.
  * @return: A positive value if the given number is equal to zero. Zero if not.
  */
@@ -43,7 +42,6 @@ int is_null(t_number *number)
 
 /**
  * Checks if a number is greater than an other.
- * @param bistromathique: The bistromathique structure.
  * @param nb_a: The first number to compare.
  * @param nb_b: The second number to compare.
  * @return: A positive value if the first number is greater than the second. Zero if not.
@@ -62,15 +60,11 @@ int is_higher(t_number *nb_a, t_number *nb_b)
         return 0;
     while (index < nb_a->size)
     {
-        if ((is_negative(nb_a) &&
-             nb_a->value[index] < nb_b->value[index]) ||
-            (!is_negative(nb_a) &&
-             nb_a->value[index] > nb_b->value[index]))
+        if ((is_negative(nb_a) && nb_a->value[index] < nb_b->value[index]) ||
+            (!is_negative(nb_a) && nb_a->value[index] > nb_b->value[index]))
             return 1;
-        else if ((is_negative(nb_a) &&
-                  nb_a->value[index] > nb_b->value[index]) ||
-                 (!is_negative(nb_a) &&
-                  nb_a->value[index] < nb_b->value[index]))
+        else if ((is_negative(nb_a) && nb_a->value[index] > nb_b->value[index]) ||
+                 (!is_negative(nb_a) && nb_a->value[index] < nb_b->value[index]))
             return 0;
         index += 1;
     }
