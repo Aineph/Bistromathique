@@ -8,33 +8,26 @@
 
 int is_priority_operator(t_bistromathique bistromathique, char c)
 {
-    int i = 0;
+    int index = 0;
 
-    while (bistromathique.ops[i] != '\0')
+    while (bistromathique.ops[index] != '\0')
     {
-        if (c == bistromathique.ops[i] && (i == OP_MULT_IDX || i == OP_DIV_IDX || i == OP_MOD_IDX))
+        if (c == bistromathique.ops[index] && (index == OP_MULT_IDX || index == OP_DIV_IDX || index == OP_MOD_IDX))
             return 1;
-        i += 1;
+        index += 1;
     }
-    return 0;
-}
-
-int is_parenthesis(t_bistromathique bistromathique, char c)
-{
-    if (c == bistromathique.ops[OP_OPEN_PARENT_IDX] || c == bistromathique.ops[OP_CLOSE_PARENT_IDX])
-        return 1;
     return 0;
 }
 
 int is_operator(t_bistromathique bistromathique, char c)
 {
-    int i = 0;
+    int index = 0;
 
-    while (bistromathique.ops[i] != '\0')
+    while (bistromathique.ops[index] != '\0')
     {
-        if (c == bistromathique.ops[i])
+        if (c == bistromathique.ops[index])
             return 1;
-        i += 1;
+        index += 1;
     }
     return 0;
 }

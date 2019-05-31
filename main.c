@@ -41,7 +41,7 @@ static void check_ops(char *ops)
 /**
  * Allocates the memory to store the expression.
  * @param size: The size of the expression.
- * @return expr
+ * @return expr: The arithmetic expression to compute.
  */
 static char *get_expr(unsigned int size)
 {
@@ -74,7 +74,7 @@ static char *get_expr(unsigned int size)
  * The main function.
  * @param ac: The number of arguments passed as parameter.
  * @param av: The arguments values.
- * @return
+ * @return: Zero if everything works fine. An other value if a problem occurs.
  */
 int main(int ac, char **av)
 {

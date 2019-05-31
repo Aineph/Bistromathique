@@ -32,40 +32,31 @@ void free_expression(t_expression_tree **expression_node)
 }
 
 /**
- * Creates an expression containing the number on the left of the operator.
+ * Inserts a newly created node in the tree by taking care of priority operators.
  * @param bistromathique: The bistromathique structure.
- * @param position: The position of an operator in the arithmetic expression.
- * @return: The expression containing the left value of the expression.
+ * @param root: The root of the expression tree.
+ * @param new_expression_node: The new expression node to insert in the tree.
  */
-t_expression_tree *parse_left_value(t_bistromathique bistromathique, int position)
+void update_root_expression(t_bistromathique bistromathique, t_expression_tree **root,
+                            t_expression_tree *new_expression_node)
 {
-    t_expression_tree *left_expression = NULL;
-    int i = position - 1;
-    int size = 0;
-
-    if ((left_expression = malloc(sizeof(*left_expression))) == NULL)
+    if ((*root)->first == NULL || (*root)->second == NULL)
     {
-        my_putstr(MALLOC_ERROR);
-        return NULL;
+        free_expression(root);
+        *root = new_expression_node;
     }
-    while (i >= 0 && !is_operator(bistromathique, bistromathique.expr[i]))
-        i -= 1;
-    size = (position - 1) - i;
-    if ((left_expression->result = create_number()) == NULL)
+    else if (is_priority_operator(bistromathique, new_expression_node->operator) &&
+             new_expression_node->level >= (*root)->level)
     {
-        free(left_expression);
-        return NULL;
+        new_expression_node->first = (*root)->second;
+        (*root)->second = new_expression_node;
     }
-    if (assign_value_to_number(left_expression->result, &bistromathique.expr[i + 1], size, SIGN_POS) == -1)
+    else
     {
-        free_number(left_expression->result);
-        free(left_expression);
-        return NULL;
+        free_expression(&new_expression_node->first);
+        new_expression_node->first = *root;
+        *root = new_expression_node;
     }
-    left_expression->first = NULL;
-    left_expression->second = NULL;
-    left_expression->operator = 0;
-    return left_expression;
 }
 
 /**
@@ -74,7 +65,7 @@ t_expression_tree *parse_left_value(t_bistromathique bistromathique, int positio
  * @param position: The position of an operator in the arithmetic expression.
  * @return: The expression containing the right value of the expression.
  */
-t_expression_tree *parse_right_value(t_bistromathique bistromathique, int position)
+static t_expression_tree *parse_right_value(t_bistromathique bistromathique, int position)
 {
     t_expression_tree *right_expression = NULL;
     int i = position + 1;
@@ -106,31 +97,40 @@ t_expression_tree *parse_right_value(t_bistromathique bistromathique, int positi
 }
 
 /**
- * Inserts a newly created node in the tree by taking care of priority operators.
+ * Creates an expression containing the number on the left of the operator.
  * @param bistromathique: The bistromathique structure.
- * @param root: The root of the expression tree.
- * @param new_expression_node: The new expression node to insert in the tree.
+ * @param position: The position of an operator in the arithmetic expression.
+ * @return: The expression containing the left value of the expression.
  */
-void update_root_expression(t_bistromathique bistromathique, t_expression_tree **root,
-                            t_expression_tree *new_expression_node)
+static t_expression_tree *parse_left_value(t_bistromathique bistromathique, int position)
 {
-    if ((*root)->first == NULL || (*root)->second == NULL)
+    t_expression_tree *left_expression = NULL;
+    int i = position - 1;
+    int size = 0;
+
+    if ((left_expression = malloc(sizeof(*left_expression))) == NULL)
     {
-        free_expression(root);
-        *root = new_expression_node;
+        my_putstr(MALLOC_ERROR);
+        return NULL;
     }
-    else if (is_priority_operator(bistromathique, new_expression_node->operator) &&
-             new_expression_node->level >= (*root)->level)
+    while (i >= 0 && !is_operator(bistromathique, bistromathique.expr[i]))
+        i -= 1;
+    size = (position - 1) - i;
+    if ((left_expression->result = create_number()) == NULL)
     {
-        new_expression_node->first = (*root)->second;
-        (*root)->second = new_expression_node;
+        free(left_expression);
+        return NULL;
     }
-    else
+    if (assign_value_to_number(left_expression->result, &bistromathique.expr[i + 1], size, SIGN_POS) == -1)
     {
-        free_expression(&new_expression_node->first);
-        new_expression_node->first = *root;
-        *root = new_expression_node;
+        free_number(left_expression->result);
+        free(left_expression);
+        return NULL;
     }
+    left_expression->first = NULL;
+    left_expression->second = NULL;
+    left_expression->operator = 0;
+    return left_expression;
 }
 
 /**

@@ -11,7 +11,7 @@
  * @param expression_stack: The stack of expressions.
  * @return: A negative value if an error occurs. Zero if the removal completes successfully.
  */
-int pop_expression_from_stack(t_expression_stack **expression_stack)
+static int pop_expression_from_stack(t_expression_stack **expression_stack)
 {
     t_expression_stack *save = *expression_stack;
 
@@ -77,7 +77,7 @@ int merge_expressions(t_expression_stack **expression_stack)
  * @param expression_root: The root of the expression tree to push in the stack.
  * @return: A negative value if an error occurs. Zero if the insertion completes successfully.
  */
-int add_expression_to_stack(t_expression_stack **expression_stack, t_expression_tree *expression_root)
+static int add_expression_to_stack(t_expression_stack **expression_stack, t_expression_tree *expression_root)
 {
     t_expression_stack *new_element;
 

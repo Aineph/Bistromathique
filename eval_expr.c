@@ -121,17 +121,17 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
 {
     t_bistromathique bistromathique = init_bistromathique(base, ops, expr, size);
     t_expression_tree *expression_root = NULL;
-    t_operation_list *operation_list = NULL;
+    t_operation_map *operation_map = NULL;
     t_number *result = NULL;
 
-    if ((operation_list = init_operation_list(bistromathique)) == NULL)
+    if ((operation_map = init_operation_map(bistromathique)) == NULL)
         return NULL;
     if ((expression_root = parse_expr(bistromathique)) == NULL)
     {
-        empty_operation_list(operation_list);
+        empty_operation_map(operation_map);
         return NULL;
     }
-    result = compute(bistromathique, operation_list, &expression_root);
+    result = compute(bistromathique, operation_map, &expression_root);
     if (result->sign == SIGN_NEG)
         result->value = str_prepend(result->value, bistromathique.ops[OP_NEG_IDX], result->size);
     return result->value;

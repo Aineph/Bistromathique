@@ -106,15 +106,15 @@ typedef struct s_multiplication
 typedef t_number *(*t_operation)(t_bistromathique, t_number *, t_number *);
 
 /**
- * @typedef t_operation_list
- * The list of every operations.
+ * @typedef t_operation_map
+ * The map associating every operation character to its function.
  */
-typedef struct s_operation_list
+typedef struct s_operation_map
 {
     char operator;
     t_operation operation;
-    struct s_operation_list *next;
-} t_operation_list;
+    struct s_operation_map *next;
+} t_operation_map;
 
 /**
  * @typedef t_expression_tree
@@ -147,10 +147,6 @@ void print_expr(t_expression_tree *);
 
 void free_expression(t_expression_tree **);
 
-t_expression_tree *parse_left_value(t_bistromathique, int);
-
-t_expression_tree *parse_right_value(t_bistromathique, int);
-
 void update_root_expression(t_bistromathique, t_expression_tree **, t_expression_tree *);
 
 t_expression_tree *create_expression(t_bistromathique, int, int);
@@ -159,13 +155,9 @@ t_expression_tree *create_expression(t_bistromathique, int, int);
  * expression_stack.c
  */
 
-int pop_expression_from_stack(t_expression_stack **);
-
 int empty_expression_stack(t_expression_stack **);
 
 int merge_expressions(t_expression_stack **);
-
-int add_expression_to_stack(t_expression_stack **, t_expression_tree *);
 
 int create_sub_expression(t_expression_stack **, int);
 
@@ -173,11 +165,9 @@ int create_sub_expression(t_expression_stack **, int);
  * operation_list.c
  */
 
-void empty_operation_list(t_operation_list *);
+void empty_operation_map(t_operation_map *);
 
-int add_operation_in_list(t_operation_list **, char, t_operation);
-
-t_operation_list *init_operation_list(t_bistromathique);
+t_operation_map *init_operation_map(t_bistromathique);
 
 /*
  * number.c
@@ -197,7 +187,7 @@ t_number *create_number(void);
  * compute.c
  */
 
-t_number *compute(t_bistromathique, t_operation_list *, t_expression_tree **);
+t_number *compute(t_bistromathique, t_operation_map *, t_expression_tree **);
 
 /*
  * infinite_add.c
@@ -276,8 +266,6 @@ char *str_rpad(char *, int, char, int);
  */
 
 int is_priority_operator(t_bistromathique, char);
-
-int is_parenthesis(t_bistromathique, char);
 
 int is_operator(t_bistromathique, char);
 
