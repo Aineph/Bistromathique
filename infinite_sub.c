@@ -12,8 +12,10 @@
  */
 static void free_subtraction(t_subtraction *subtraction)
 {
-    free(subtraction->nb_a);
-    free(subtraction->nb_b);
+    if (subtraction->nb_a != NULL)
+        free(subtraction->nb_a);
+    if (subtraction->nb_b != NULL)
+        free(subtraction->nb_b);
     free(subtraction);
 }
 
@@ -60,17 +62,14 @@ static void perform_subtraction(t_subtraction *subtraction)
 static t_subtraction *
 init_subtraction(t_subtraction *subtraction, t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
-    if ((subtraction->nb_a = create_number()) == NULL)
-        return NULL;
-    if ((subtraction->nb_b = create_number()) == NULL)
+    subtraction->nb_a = NULL;
+    subtraction->nb_b = NULL;
+    subtraction->result = NULL;
+    if ((subtraction->nb_a = create_number()) == NULL || (subtraction->nb_b = create_number()) == NULL ||
+        (subtraction->result = create_number()) == NULL)
     {
-        free(subtraction->nb_a);
-        return NULL;
-    }
-    if ((subtraction->result = create_number()) == NULL)
-    {
-        free(subtraction->nb_a);
-        free(subtraction->nb_b);
+        free_number(subtraction->result);
+        free_subtraction(subtraction);
         return NULL;
     }
     subtraction->result->sign = SIGN_POS;
@@ -102,11 +101,8 @@ static t_subtraction *create_subtraction(t_bistromathique bistromathique, t_numb
         my_putstr(MALLOC_ERROR);
         return NULL;
     }
-    if (init_subtraction(subtraction, bistromathique, nb_a, nb_b) == NULL)
-    {
-        free(subtraction);
+    if ((subtraction = init_subtraction(subtraction, bistromathique, nb_a, nb_b)) == NULL)
         return NULL;
-    }
     subtraction->result->size = MAX(nb_a->size, nb_b->size);
     if ((subtraction->result->value = malloc(sizeof(*subtraction->result->value) * subtraction->result->size)) == NULL)
     {

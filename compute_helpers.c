@@ -50,21 +50,15 @@ int is_higher(t_number *nb_a, t_number *nb_b)
 {
     int index = 0;
 
-    if ((!is_negative(nb_a) && is_negative(nb_b)) ||
-        (is_negative(nb_a) && is_negative(nb_b) && nb_b->size > nb_a->size) ||
-        (!is_negative(nb_a) && !is_negative(nb_b) && nb_a->size > nb_b->size))
+    if (nb_a->size > nb_b->size)
         return 1;
-    else if ((is_negative(nb_a) && !is_negative(nb_b)) ||
-             (is_negative(nb_a) && is_negative(nb_b) && nb_b->size < nb_a->size) ||
-             (!is_negative(nb_a) && !is_negative(nb_b) && nb_a->size < nb_b->size))
+    else if (nb_a->size < nb_b->size)
         return 0;
     while (index < nb_a->size)
     {
-        if ((is_negative(nb_a) && nb_a->value[index] < nb_b->value[index]) ||
-            (!is_negative(nb_a) && nb_a->value[index] > nb_b->value[index]))
+        if (nb_a->value[index] > nb_b->value[index])
             return 1;
-        else if ((is_negative(nb_a) && nb_a->value[index] > nb_b->value[index]) ||
-                 (!is_negative(nb_a) && nb_a->value[index] < nb_b->value[index]))
+        else if (nb_a->value[index] < nb_b->value[index])
             return 0;
         index += 1;
     }

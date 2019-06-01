@@ -40,6 +40,7 @@
  */
 
 # define MAX(a, b) ((a > b) ? (a) : (b))
+# define MIN(a, b) ((a < b) ? (a) : (b))
 
 /**
  * @typedef t_bistromathique
@@ -131,10 +132,16 @@ typedef struct s_subtraction
 typedef struct s_multiplication
 {
     int middle;
+    t_number *result;
+    int product;
+    int carry;
+    int base;
     t_number *high_a;
     t_number *low_a;
     t_number *high_b;
     t_number *low_b;
+    t_number *a1_a;
+    t_number *a1_b;
     t_number *a0;
     t_number *a1;
     t_number *a2;
@@ -247,6 +254,8 @@ t_number *infinite_sub(t_bistromathique, t_number *, t_number *);
  */
 
 t_number *simple_mul(t_bistromathique, t_number *, t_number *);
+
+t_number *recursive_multiplication(t_bistromathique, t_number *, t_number *);
 
 t_number *infinite_mul(t_bistromathique, t_number *, t_number *);
 

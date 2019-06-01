@@ -103,7 +103,7 @@ char *str_rpad(char *str, int length, char c, int count)
     int i = 0;
     int j = 0;
 
-    if ((result = malloc(sizeof(*result) * (length + count + 1))) == NULL)
+    if ((result = malloc(sizeof(*result) * (length + count))) == NULL)
     {
         my_putstr(MALLOC_ERROR);
         return NULL;
@@ -118,7 +118,6 @@ char *str_rpad(char *str, int length, char c, int count)
         result[i + j] = c;
         j += 1;
     }
-    result[i + j] = '\0';
     if (str != NULL)
         free(str);
     return result;
@@ -136,7 +135,7 @@ char *str_to_val(t_bistromathique bistromathique, const char *source, int length
     char *result = NULL;
     int index = 0;
 
-    if ((result = malloc(sizeof(*result) * (length + 1))) == NULL)
+    if ((result = malloc(sizeof(*result) * length)) == NULL)
     {
         my_putstr(MALLOC_ERROR);
         return NULL;
@@ -151,7 +150,6 @@ char *str_to_val(t_bistromathique bistromathique, const char *source, int length
         }
         index += 1;
     }
-    result[index] = '\0';
     return result;
 }
 

@@ -12,8 +12,10 @@
  */
 static void free_addition(t_addition *addition)
 {
-    free(addition->nb_a);
-    free(addition->nb_b);
+    if (addition->nb_a != NULL)
+        free(addition->nb_a);
+    if (addition->nb_b != NULL)
+        free(addition->nb_b);
     free(addition);
 }
 
@@ -55,17 +57,14 @@ static void perform_addition(t_addition *addition)
  */
 static t_addition *init_addition(t_addition *addition, t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
-    if ((addition->nb_a = create_number()) == NULL)
-        return NULL;
-    if ((addition->nb_b = create_number()) == NULL)
+    addition->nb_a = NULL;
+    addition->nb_b = NULL;
+    addition->result = NULL;
+    if ((addition->nb_a = create_number()) == NULL || (addition->nb_b = create_number()) == NULL ||
+        (addition->result = create_number()) == NULL)
     {
-        free(addition->nb_a);
-        return NULL;
-    }
-    if ((addition->result = create_number()) == NULL)
-    {
-        free(addition->nb_a);
-        free(addition->nb_b);
+        free_number(addition->result);
+        free_addition(addition);
         return NULL;
     }
     reference_number(addition->nb_a, nb_a->value, nb_a->size, nb_a->sign);
@@ -90,11 +89,8 @@ static t_addition *create_addition(t_bistromathique bistromathique, t_number *nb
         my_putstr(MALLOC_ERROR);
         return NULL;
     }
-    if (init_addition(addition, bistromathique, nb_a, nb_b) == NULL)
-    {
-        free(addition);
+    if ((addition = init_addition(addition, bistromathique, nb_a, nb_b)) == NULL)
         return NULL;
-    }
     addition->result->size = MAX(nb_a->size, nb_b->size) + 1;
     if ((addition->result->value = malloc(sizeof(*addition->result->value) * addition->result->size)) == NULL)
     {

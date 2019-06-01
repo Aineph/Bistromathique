@@ -12,9 +12,12 @@
  */
 void free_number(t_number *number)
 {
-    if (number->value != NULL)
-        free(number->value);
-    free(number);
+    if (number != NULL)
+    {
+        if (number->value != NULL)
+            free(number->value);
+        free(number);
+    }
 }
 
 /**
@@ -49,10 +52,15 @@ void reference_number(t_number *number, char *value, int size, t_sign sign)
     int index = 0;
 
     number->size = size;
-    while (index < size && value[index] == 0)
-        index += 1;
-    number->size -= index;
-    number->value = &value[index];
+    if (value == NULL)
+        number->value = NULL;
+    else
+    {
+        while (index < size && value[index] == 0)
+            index += 1;
+        number->size -= index;
+        number->value = &value[index];
+    }
     number->sign = sign;
 }
 
