@@ -97,6 +97,26 @@ typedef struct s_addition
 } t_addition;
 
 /**
+ * @typedef t_subtraction
+ * The necessary variables needed to perform the subtraction algorithm.
+ * @var nb_a: The first number.
+ * @var nb_b: The second number.
+ * @var result: The result.
+ * @var difference: The temporary difference.
+ * @var carry: The temporary carry.
+ * @var base: The base of computation.
+ */
+typedef struct s_subtraction
+{
+    t_number *nb_a;
+    t_number *nb_b;
+    t_number *result;
+    int difference;
+    int carry;
+    int base;
+} t_subtraction;
+
+/**
  * @typedef t_multiplication
  * The necessary variables needed to perform the multiplication algorithm.
  * @var middle: The middle offset of the numbers.

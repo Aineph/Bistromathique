@@ -18,6 +18,34 @@ static void free_addition(t_addition *addition)
 }
 
 /**
+ * Performs the infinite addition.
+ * @param addition: The addition structure.
+ */
+static void perform_addition(t_addition *addition)
+{
+    int position = 1;
+
+    addition->carry = 0;
+    while (position <= addition->result->size)
+    {
+        addition->sum = 0;
+        if (position <= addition->nb_a->size)
+            addition->sum += addition->nb_a->value[addition->nb_a->size - position];
+        if (position <= addition->nb_b->size)
+            addition->sum += addition->nb_b->value[addition->nb_b->size - position];
+        addition->sum += addition->carry;
+        addition->result->value[addition->result->size - position] = addition->sum % addition->base;
+        addition->carry = addition->sum / addition->base;
+        position += 1;
+    }
+    if (remove_leading_zeros(addition->result) == -1)
+    {
+        free_number(addition->result);
+        addition->result = NULL;
+    }
+}
+
+/**
  * Allocates and initializes the variables of the addition structure.
  * @param addition: The addition structure to initialize.
  * @param bistromathique: The bistromathique structure.
@@ -68,7 +96,7 @@ static t_addition *create_addition(t_bistromathique bistromathique, t_number *nb
         return NULL;
     }
     addition->result->size = MAX(nb_a->size, nb_b->size) + 1;
-    if ((addition->result->value = malloc(sizeof(*addition->result->value) * (addition->result->size))) == NULL)
+    if ((addition->result->value = malloc(sizeof(*addition->result->value) * addition->result->size)) == NULL)
     {
         my_putstr(MALLOC_ERROR);
         free_addition(addition);
@@ -76,34 +104,6 @@ static t_addition *create_addition(t_bistromathique bistromathique, t_number *nb
         return NULL;
     }
     return addition;
-}
-
-/**
- * Performs the infinite addition.
- * @param addition: The addition structure.
- */
-static void perform_addition(t_addition *addition)
-{
-    int position = 0;
-
-    addition->carry = 0;
-    while (position <= addition->result->size)
-    {
-        addition->sum = 0;
-        if (position <= addition->nb_a->size)
-            addition->sum += addition->nb_a->value[addition->nb_a->size - position];
-        if (position <= addition->nb_b->size)
-            addition->sum += addition->nb_b->value[addition->nb_b->size - position];
-        addition->sum += addition->carry;
-        addition->result->value[addition->result->size - position] = addition->sum % addition->base;
-        addition->carry = addition->sum / addition->base;
-        position += 1;
-    }
-    if (remove_leading_zeros(addition->result) == -1)
-    {
-        free_number(addition->result);
-        addition->result = NULL;
-    }
 }
 
 /**
