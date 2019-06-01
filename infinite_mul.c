@@ -176,7 +176,7 @@ t_number *recursive_multiplication(t_bistromathique bistromathique, t_number *nb
     t_number *result = NULL;
     t_multiplication *multiplication = NULL;
 
-    if (nb_a->size + nb_b->size < 100 || (nb_a->size < 25 || nb_b->size < 25))
+    if (nb_a->size + nb_b->size < 120 || (nb_a->size < 30 || nb_b->size < 30))
         return simple_mul(bistromathique, nb_a, nb_b);
     if ((multiplication = malloc(sizeof(*multiplication))) == NULL)
     {
