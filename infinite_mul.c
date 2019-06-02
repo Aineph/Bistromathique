@@ -6,41 +6,10 @@
 #include <stdlib.h>
 #include "bistromathique.h"
 
-static void perform_multiplication(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
-{
-    int offset = result->size;
-    int tmp_result = 0;
-    int ret = 0;
-    int position_a;
-    int position_b;
-
-    result->value[offset--] = '\0';
-    while (offset >= 0)
-    {
-        tmp_result = ret;
-        position_b = result->size - offset;
-        position_a = 1;
-        if (position_b > nb_b->size)
-        {
-            position_a += (position_b - nb_b->size);
-            position_b -= (position_b - nb_b->size);
-        }
-        while (position_a <= result->size - offset && position_a <= nb_a->size)
-        {
-            tmp_result += (nb_a->value[nb_a->size - position_a] * nb_b->value[nb_b->size - position_b]);
-            position_a += 1;
-            position_b -= 1;
-        }
-        result->value[offset] = tmp_result % bistromathique.base_length;
-        ret = tmp_result / bistromathique.base_length;
-        offset -= 1;
-    }
-    remove_leading_zeros(result);
-    result->sign = SIGN_POS;
-    if (nb_a->sign != nb_b->sign)
-        result->sign = SIGN_NEG;
-}
-
+/**
+ * Frees the content of the multiplication structure without removing the result.
+ * @param multiplication: The multiplication structure.
+ */
 static void free_multiplication(t_multiplication *multiplication)
 {
     if (multiplication->high_a != NULL)
@@ -64,18 +33,12 @@ static void free_multiplication(t_multiplication *multiplication)
     free(multiplication);
 }
 
-t_number *simple_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
-{
-    t_number *result = NULL;
-
-    result = create_number();
-    result->size = nb_a->size + nb_b->size;
-    if ((result->value = malloc(sizeof(*result->value) * (result->size + 1))) == NULL)
-        return NULL;
-    perform_multiplication(bistromathique, nb_a, nb_b, result);
-    return result;
-}
-
+/**
+ * Initializes the values to perform the multiplication.
+ * @param multiplication: The multiplication structure.
+ * @param nb_a: The first number.
+ * @param nb_b: The second number.
+ */
 static void init_multiplication_values(t_multiplication *multiplication, t_number *nb_a, t_number *nb_b)
 {
     multiplication->middle = (MAX(nb_a->size, nb_b->size) + 1) / 2;
@@ -97,6 +60,119 @@ static void init_multiplication_values(t_multiplication *multiplication, t_numbe
     }
 }
 
+/**
+ * Computes the needed values for the multiplication algorithm.
+ * @param bistromathique: The bistromathique structure.
+ * @param multiplication: The multiplication structure.
+ * @return: A negative value if an error occurs. Zero if the computation completes successfully.
+ */
+static int compute_multiplication_values(t_bistromathique bistromathique, t_multiplication *multiplication)
+{
+    t_number *addition = NULL;
+    t_number *subtraction = NULL;
+
+    multiplication->a1_a = infinite_sub(bistromathique, multiplication->high_a, multiplication->low_a);
+    multiplication->a1_b = infinite_sub(bistromathique, multiplication->high_b, multiplication->low_b);
+    if ((is_null(multiplication->high_a) || is_null(multiplication->high_b)) &&
+        expr_to_number(bistromathique, multiplication->a0, &bistromathique.base[0], 1) == -1)
+        return -1;
+    else
+        multiplication->a0 = infinite_mul(bistromathique, multiplication->high_a, multiplication->high_b);
+    if ((is_null(multiplication->a1_a) || is_null(multiplication->a1_b)) &&
+        expr_to_number(bistromathique, multiplication->a1, &bistromathique.base[0], 1) == -1)
+        return -1;
+    else
+        multiplication->a1 = infinite_mul(bistromathique, multiplication->a1_a, multiplication->a1_b);
+    if ((is_null(multiplication->low_a) || is_null(multiplication->low_b)) &&
+        expr_to_number(bistromathique, multiplication->a2, &bistromathique.base[0], 1) == -1)
+        return -1;
+    else
+        multiplication->a2 = infinite_mul(bistromathique, multiplication->low_a, multiplication->low_b);
+    addition = infinite_add(bistromathique, multiplication->a0, multiplication->a2);
+    subtraction = infinite_sub(bistromathique, addition, multiplication->a1);
+    free_number(addition);
+    multiplication->a1 = subtraction;
+    return 0;
+}
+
+/**
+ * Retrieves the result of the recursive multiplication algorithm.
+ * @param bistromathique: The bistromathique structure.
+ * @param multiplication: The multiplication structure.
+ */
+static void process_multiplication(t_bistromathique bistromathique, t_multiplication *multiplication)
+{
+    t_number *tmp = NULL;
+
+    multiplication->a0->value = str_rpad(multiplication->a0->value, multiplication->a0->size, 0,
+                                         multiplication->middle + multiplication->middle);
+    multiplication->a0->size += multiplication->middle + multiplication->middle;
+    multiplication->a1->value = str_rpad(multiplication->a1->value, multiplication->a1->size, 0,
+                                         multiplication->middle);
+    multiplication->a1->size += multiplication->middle;
+    tmp = infinite_add(bistromathique, multiplication->a0, multiplication->a1);
+    multiplication->result = infinite_add(bistromathique, tmp, multiplication->a2);
+    free_number(tmp);
+}
+
+/**
+ * Performs the infinite multiplication.
+ * @param bistromathique: The bistromathique structure.
+ * @param nb_a: The first number.
+ * @param nb_b: The second number.
+ * @param result: The number in which to store the result.
+ */
+static void perform_multiplication(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b, t_number *result)
+{
+    int offset = result->size - 1;
+    int tmp_result = 0;
+    int position_a;
+    int position_b;
+
+    while (offset >= 0)
+    {
+        position_b = result->size - offset;
+        position_a = 1;
+        if (position_b > nb_b->size)
+        {
+            position_a += (position_b - nb_b->size);
+            position_b -= (position_b - nb_b->size);
+        }
+        while (position_a <= result->size - offset && position_a <= nb_a->size)
+            tmp_result += (nb_a->value[nb_a->size - position_a++] * nb_b->value[nb_b->size - position_b--]);
+        result->value[offset] = tmp_result % bistromathique.base_length;
+        tmp_result = tmp_result / bistromathique.base_length;
+        offset -= 1;
+    }
+    remove_leading_zeros(result);
+    result->sign = SIGN_POS;
+    if (nb_a->sign != nb_b->sign)
+        result->sign = SIGN_NEG;
+}
+
+/*
+ * Will be replaced soon.
+ */
+t_number *simple_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+{
+    t_number *result = NULL;
+
+    result = create_number();
+    result->size = nb_a->size + nb_b->size;
+    if ((result->value = malloc(sizeof(*result->value) * result->size)) == NULL)
+        return NULL;
+    perform_multiplication(bistromathique, nb_a, nb_b, result);
+    return result;
+}
+
+/**
+ * Allocates and initializes the variables of the subtraction structure.
+ * @param multiplication: The multiplication structure to initialize.
+ * @param bistromathique: The bistromathique structure.
+ * @param nb_a: The first number.
+ * @param nb_b: The second number.
+ * @return: The initialized multiplication structure.
+ */
 static t_multiplication *
 init_multiplication(t_multiplication *multiplication, t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
@@ -125,59 +201,17 @@ init_multiplication(t_multiplication *multiplication, t_bistromathique bistromat
     return multiplication;
 }
 
-static int compute_multiplication_values(t_bistromathique bistromathique, t_multiplication *multiplication)
+/**
+ * Creates the multiplication structure that contains every needed variables.
+ * @param bistromathique: The bistromathique structure.
+ * @param nb_a: The first number.
+ * @param nb_b: The second number.
+ * @return: The multiplication structure.
+ */
+static t_multiplication *create_multiplication(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
 {
-    t_number *addition = NULL;
-    t_number *subtraction = NULL;
-
-    multiplication->a1_a = infinite_sub(bistromathique, multiplication->high_a, multiplication->low_a);
-    multiplication->a1_b = infinite_sub(bistromathique, multiplication->high_b, multiplication->low_b);
-    if ((is_null(multiplication->high_a) || is_null(multiplication->high_b)) &&
-        expr_to_number(bistromathique, multiplication->a0, &bistromathique.base[0], 1) == -1)
-        return -1;
-    else
-        multiplication->a0 = recursive_multiplication(bistromathique, multiplication->high_a, multiplication->high_b);
-    if ((is_null(multiplication->a1_a) || is_null(multiplication->a1_b)) &&
-        expr_to_number(bistromathique, multiplication->a1, &bistromathique.base[0], 1) == -1)
-        return -1;
-    else
-        multiplication->a1 = recursive_multiplication(bistromathique, multiplication->a1_a, multiplication->a1_b);
-    if ((is_null(multiplication->low_a) || is_null(multiplication->low_b)) &&
-        expr_to_number(bistromathique, multiplication->a2, &bistromathique.base[0], 1) == -1)
-        return -1;
-    else
-        multiplication->a2 = recursive_multiplication(bistromathique, multiplication->low_a, multiplication->low_b);
-    addition = infinite_add(bistromathique, multiplication->a0, multiplication->a2);
-    subtraction = infinite_sub(bistromathique, addition, multiplication->a1);
-    free_number(addition);
-    addition = multiplication->a1;
-    multiplication->a1 = subtraction;
-    free_number(addition);
-    return 0;
-}
-
-static void recover_multiplication_fragments(t_bistromathique bistromathique, t_multiplication *multiplication)
-{
-    t_number *tmp = NULL;
-
-    multiplication->a0->value = str_rpad(multiplication->a0->value, multiplication->a0->size, 0,
-                                         multiplication->middle + multiplication->middle);
-    multiplication->a0->size += multiplication->middle + multiplication->middle;
-    multiplication->a1->value = str_rpad(multiplication->a1->value, multiplication->a1->size, 0,
-                                         multiplication->middle);
-    multiplication->a1->size += multiplication->middle;
-    tmp = infinite_add(bistromathique, multiplication->a0, multiplication->a1);
-    multiplication->result = infinite_add(bistromathique, tmp, multiplication->a2);
-    free_number(tmp);
-}
-
-t_number *recursive_multiplication(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
-{
-    t_number *result = NULL;
     t_multiplication *multiplication = NULL;
 
-    if (nb_a->size + nb_b->size < 120 || (nb_a->size < 30 || nb_b->size < 30))
-        return simple_mul(bistromathique, nb_a, nb_b);
     if ((multiplication = malloc(sizeof(*multiplication))) == NULL)
     {
         my_putstr(MALLOC_ERROR);
@@ -185,23 +219,35 @@ t_number *recursive_multiplication(t_bistromathique bistromathique, t_number *nb
     }
     if ((multiplication = init_multiplication(multiplication, bistromathique, nb_a, nb_b)) == NULL)
         return NULL;
+    return multiplication;
+}
+
+/**
+ * Computes the multiplication of two infinite numbers.
+ * @param bistromathique: The bistromathique structure.
+ * @param nb_a: The first number.
+ * @param nb_b: The second number.
+ * @return: The product of the two given numbers.
+ */
+t_number *infinite_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
+{
+    t_multiplication *multiplication = NULL;
+    t_number *result = NULL;
+
+    if (nb_a->size + nb_b->size < 120 || (nb_a->size < 30 || nb_b->size < 30))
+        return simple_mul(bistromathique, nb_a, nb_b);
+    if ((multiplication = create_multiplication(bistromathique, nb_a, nb_b)) == NULL)
+        return NULL;
     if (compute_multiplication_values(bistromathique, multiplication) == -1)
     {
+        free_number(multiplication->result);
         free_multiplication(multiplication);
         return NULL;
     }
-    recover_multiplication_fragments(bistromathique, multiplication);
+    process_multiplication(bistromathique, multiplication);
     if (nb_a->sign != nb_b->sign)
         multiplication->result->sign = SIGN_NEG;
     result = multiplication->result;
     free_multiplication(multiplication);
-    return result;
-}
-
-t_number *infinite_mul(t_bistromathique bistromathique, t_number *nb_a, t_number *nb_b)
-{
-    t_number *result = NULL;
-
-    result = recursive_multiplication(bistromathique, nb_a, nb_b);
     return result;
 }
