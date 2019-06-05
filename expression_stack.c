@@ -11,7 +11,7 @@
  * @param expression_stack: The stack of expressions.
  * @return: A negative value if an error occurs. Zero if the removal completes successfully.
  */
-static int pop_expression_from_stack(t_expression_stack **expression_stack)
+int pop_expression_from_stack(t_expression_stack **expression_stack)
 {
     t_expression_stack *save = *expression_stack;
 
@@ -111,11 +111,7 @@ int create_sub_expression(t_expression_stack **expression_stack, int expression_
     expression_root->second = NULL;
     expression_root->operator = 0;
     expression_root->level = expression_level;
-    if ((expression_root->result = create_number()) == NULL)
-    {
-        free(expression_root);
-        return -1;
-    }
+    expression_root->result = NULL;
     if (add_expression_to_stack(expression_stack, expression_root) == -1)
     {
         free_number(expression_root->result);

@@ -176,7 +176,5 @@ char *val_to_str(t_bistromathique bistromathique, char *source, int length)
         index += 1;
     }
     result[index] = '\0';
-    if (source != NULL)
-        free(source);
     return result;
 }

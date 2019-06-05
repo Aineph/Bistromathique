@@ -77,20 +77,30 @@ static int compute_multiplication_values(t_bistromathique bistromathique, t_mult
         expr_to_number(bistromathique, multiplication->a0, &bistromathique.base[0], 1) == -1)
         return -1;
     else
+    {
+        free_number(multiplication->a0);
         multiplication->a0 = infinite_mul(bistromathique, multiplication->high_a, multiplication->high_b);
+    }
     if ((is_null(multiplication->a1_a) || is_null(multiplication->a1_b)) &&
         expr_to_number(bistromathique, multiplication->a1, &bistromathique.base[0], 1) == -1)
         return -1;
     else
+    {
+        free_number(multiplication->a1);
         multiplication->a1 = infinite_mul(bistromathique, multiplication->a1_a, multiplication->a1_b);
+    }
     if ((is_null(multiplication->low_a) || is_null(multiplication->low_b)) &&
         expr_to_number(bistromathique, multiplication->a2, &bistromathique.base[0], 1) == -1)
         return -1;
     else
+    {
+        free_number(multiplication->a2);
         multiplication->a2 = infinite_mul(bistromathique, multiplication->low_a, multiplication->low_b);
+    }
     addition = infinite_add(bistromathique, multiplication->a0, multiplication->a2);
     subtraction = infinite_sub(bistromathique, addition, multiplication->a1);
     free_number(addition);
+    free_number(multiplication->a1);
     multiplication->a1 = subtraction;
     return 0;
 }
@@ -186,11 +196,10 @@ init_multiplication(t_multiplication *multiplication, t_bistromathique bistromat
     multiplication->a0 = NULL;
     multiplication->a1 = NULL;
     multiplication->a2 = NULL;
-    if ((multiplication->result = create_number()) == NULL || (multiplication->high_a = create_number()) == NULL ||
-        (multiplication->high_b = create_number()) == NULL || (multiplication->low_a = create_number()) == NULL ||
-        (multiplication->low_b = create_number()) == NULL || (multiplication->a1_a = create_number()) == NULL ||
-        (multiplication->a1_b = create_number()) == NULL || (multiplication->a0 = create_number()) == NULL ||
-        (multiplication->a1 = create_number()) == NULL || (multiplication->a2 = create_number()) == NULL)
+    if ((multiplication->high_a = create_number()) == NULL || (multiplication->high_b = create_number()) == NULL ||
+        (multiplication->low_a = create_number()) == NULL || (multiplication->low_b = create_number()) == NULL ||
+        (multiplication->a0 = create_number()) == NULL || (multiplication->a1 = create_number()) == NULL ||
+        (multiplication->a2 = create_number()) == NULL)
     {
         free_number(multiplication->result);
         free_multiplication(multiplication);

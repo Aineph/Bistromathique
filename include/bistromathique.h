@@ -40,7 +40,6 @@
  */
 
 # define MAX(a, b) ((a > b) ? (a) : (b))
-# define MIN(a, b) ((a < b) ? (a) : (b))
 
 /**
  * @typedef t_bistromathique
@@ -203,6 +202,8 @@ t_expression_tree *create_expression(t_bistromathique, int, int);
  * expression_stack.c
  */
 
+int pop_expression_from_stack(t_expression_stack **);
+
 int empty_expression_stack(t_expression_stack **);
 
 int merge_expressions(t_expression_stack **);
@@ -254,8 +255,6 @@ t_number *infinite_sub(t_bistromathique, t_number *, t_number *);
  */
 
 t_number *simple_mul(t_bistromathique, t_number *, t_number *);
-
-t_number *recursive_multiplication(t_bistromathique, t_number *, t_number *);
 
 t_number *infinite_mul(t_bistromathique, t_number *, t_number *);
 

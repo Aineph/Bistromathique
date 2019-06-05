@@ -65,6 +65,7 @@ static int retrieve_expression(t_bistromathique bistromathique, t_expression_sta
 static t_expression_tree *parse_expr(t_bistromathique bistromathique)
 {
     t_expression_stack *expression_stack = NULL;
+    t_expression_tree *expression_tree = NULL;
     int expression_level = 0;
     int index = 0;
 
@@ -86,7 +87,9 @@ static t_expression_tree *parse_expr(t_bistromathique bistromathique)
         empty_expression_stack(&expression_stack);
         return NULL;
     }
-    return expression_stack->expression_root;
+    expression_tree = expression_stack->expression_root;
+    free(expression_stack);
+    return expression_tree;
 }
 
 /**
@@ -123,6 +126,7 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
     t_expression_tree *expression_root = NULL;
     t_operation_map *operation_map = NULL;
     t_number *result = NULL;
+    char *value = NULL;
 
     if ((operation_map = init_operation_map(bistromathique)) == NULL)
         return NULL;
@@ -137,8 +141,10 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
         free_expression(&expression_root);
         return NULL;
     }
-    result->value = val_to_str(bistromathique, result->value, result->size);
+    value = val_to_str(bistromathique, result->value, result->size);
     if (result->sign == SIGN_NEG)
-        result->value = str_prepend(result->value, bistromathique.ops[OP_NEG_IDX], result->size);
-    return result->value;
+        value = str_prepend(value, bistromathique.ops[OP_NEG_IDX], result->size);
+    free_expression(&expression_root);
+    empty_operation_map(operation_map);
+    return value;
 }

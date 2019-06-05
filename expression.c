@@ -12,22 +12,23 @@
  */
 void free_expression(t_expression_tree **expression_node)
 {
-    if ((*expression_node)->result != NULL)
+    if ((*expression_node) != NULL)
     {
-        free_number((*expression_node)->result);
-        return;
-    }
-    if ((*expression_node)->first != NULL)
-    {
-        free_expression(&(*expression_node)->first);
-        free((*expression_node)->first);
-        (*expression_node)->first = NULL;
-    }
-    if ((*expression_node)->second != NULL)
-    {
-        free_expression(&(*expression_node)->second);
-        free((*expression_node)->second);
-        (*expression_node)->second = NULL;
+        if ((*expression_node)->result != NULL)
+            free_number((*expression_node)->result);
+        if ((*expression_node)->first != NULL)
+        {
+            free_expression(&(*expression_node)->first);
+            free((*expression_node)->first);
+            (*expression_node)->first = NULL;
+        }
+        if ((*expression_node)->second != NULL)
+        {
+            free_expression(&(*expression_node)->second);
+            free((*expression_node)->second);
+            (*expression_node)->second = NULL;
+        }
+        free(*expression_node);
     }
 }
 
@@ -48,6 +49,7 @@ void update_root_expression(t_bistromathique bistromathique, t_expression_tree *
     else if (is_priority_operator(bistromathique, new_expression_node->operator) &&
              new_expression_node->level >= (*root)->level)
     {
+        free_expression(&new_expression_node->first);
         new_expression_node->first = (*root)->second;
         (*root)->second = new_expression_node;
     }
@@ -149,8 +151,6 @@ t_expression_tree *create_expression(t_bistromathique bistromathique, int positi
         my_putstr(MALLOC_ERROR);
         return NULL;
     }
-    new_expression_node->first = NULL;
-    new_expression_node->second = NULL;
     if ((new_expression_node->first = parse_left_value(bistromathique, position)) == NULL)
     {
         free(new_expression_node);
@@ -164,7 +164,6 @@ t_expression_tree *create_expression(t_bistromathique bistromathique, int positi
     }
     new_expression_node->operator = bistromathique.expr[position];
     new_expression_node->level = expression_level;
-    if ((new_expression_node->result = create_number()) == NULL)
-        return NULL;
+    new_expression_node->result = NULL;
     return new_expression_node;
 }

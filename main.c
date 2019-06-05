@@ -59,9 +59,9 @@ static char *get_expr(unsigned int size)
         my_putstr(MALLOC_ERROR);
         exit(3);
     }
-    while ((read_size = read(0, &expr[tmp_size], size)) > 0)
+    while ((read_size = read(0, &expr[tmp_size], size - tmp_size)) > 0)
         tmp_size += read_size;
-    if (tmp_size < size)
+    if (tmp_size != size)
     {
         my_putstr(READ_ERROR);
         exit(4);
@@ -76,23 +76,28 @@ static char *get_expr(unsigned int size)
  * @param av: The arguments values.
  * @return: Zero if everything works fine. An other value if a problem occurs.
  */
-int main(int ac, char **av)
+int main(int argc, char **argv)
 {
     char *expr;
+    char *res;
     unsigned int size;
 
-    if (ac != 4)
+    if (argc != 4)
     {
         my_putstr("Usage : ");
-        my_putstr(av[0]);
+        my_putstr(argv[0]);
         my_putstr(" base ops\"()+-*/%\" exp_len\n");
         exit(1);
     }
-    check_base(av[1]);
-    check_ops(av[2]);
-    size = (unsigned int) my_atoi(av[3]);
+    check_base(argv[1]);
+    check_ops(argv[2]);
+    size = (unsigned int) my_atoi(argv[3]);
     expr = get_expr(size);
-    my_putstr(eval_expr(av[1], av[2], expr, size));
+    if ((res = eval_expr(argv[1], argv[2], expr, size)) != NULL)
+    {
+        my_putstr(res);
+        free(res);
+    }
     free(expr);
     return 0;
 }
