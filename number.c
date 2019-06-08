@@ -77,7 +77,7 @@ int expr_to_number(t_bistromathique bistromathique, t_number *number, char *valu
     if (number->value != NULL)
         free(number->value);
     number->size = 0;
-    if ((number->value = str_to_val(bistromathique, value, size)) == NULL)
+    if ((number->value = string_to_number(bistromathique, value, size)) == NULL)
         return -1;
     number->size = size;
     number->sign = SIGN_POS;

@@ -120,6 +120,10 @@ typedef struct s_subtraction
  * @typedef t_multiplication
  * The necessary variables needed to perform the multiplication algorithm.
  * @var middle: The middle offset of the numbers.
+ * @var result: The result.
+ * @var product: The temporary product.
+ * @var carry: The temporary carry.
+ * @var base: The base of computation.
  * @var high_a: The high part of number A.
  * @var low_a: The low part of number A.
  * @var high_b: The high part of number B.
@@ -145,6 +149,26 @@ typedef struct s_multiplication
     t_number *a1;
     t_number *a2;
 } t_multiplication;
+
+/**
+ * @typedef t_division
+ * The necessary variables needed to perform the division algorithm.
+ * @var normalized_a: The normalized value of the first number.
+ * @var normalized_b: The normalized value of the second number.
+ * @var result: The result.
+ * @var quotient: The temporary quotient.
+ * @var carry: The temporary carry.
+ * @var base: The base of computation.
+ */
+typedef struct s_division
+{
+    t_number *normalized_a;
+    t_number *normalized_b;
+    t_number *result;
+    int quotient;
+    int carry;
+    int base;
+} t_division;
 
 /**
  * @typedef t_operation
@@ -187,6 +211,12 @@ typedef struct s_expression_stack
 } t_expression_stack;
 
 void print_expr(t_expression_tree *);
+
+/*
+ * eval_expr.c
+ */
+
+char *eval_expr(char *, char *, char *, unsigned int);
 
 /*
  * expression.c
@@ -271,7 +301,7 @@ t_number *infinite_div(t_bistromathique, t_number *, t_number *);
 t_number *infinite_mod(t_bistromathique, t_number *, t_number *);
 
 /*
- * helpers.c
+ * common.c
  */
 
 void my_putstr(char *);
@@ -280,22 +310,54 @@ int my_strlen(const char *);
 
 int my_atoi(char *);
 
-int get_value(t_bistromathique, char);
-
 /*
- * compute_helpers.c
+ * common_checks.c
  */
-
-int is_negative(t_number *);
-
-int is_null(t_number *);
 
 int is_higher(t_number *, t_number *);
 
-int remove_leading_zeros(t_number *);
+int is_null(t_number *);
+
+int is_negative(t_number *);
+
+int is_priority_operator(t_bistromathique, char);
+
+int is_operator(t_bistromathique, char);
 
 /*
- * string_helpers.c
+ * common_divide.c
+ */
+
+void guess_quotient(t_division *, int);
+
+void rollback(t_division *, int);
+
+int multiply_and_subtract(t_bistromathique, t_division *, int);
+
+t_number *one_digit_multiply(t_bistromathique, t_number *, int);
+
+/*
+ * common_multiply.c
+ */
+
+void init_multiplication_values(t_multiplication *, t_number *, t_number *);
+
+int process_multiplication(t_bistromathique, t_multiplication *);
+
+/*
+ * common_numbers.c
+ */
+
+void fill_number_with_zeros(t_number *);
+
+int remove_leading_zeros(t_number *);
+
+char *string_to_number(t_bistromathique, const char *, int);
+
+char *number_to_string(t_bistromathique, const char *, int);
+
+/*
+ * common_strings.c
  */
 
 char *str_copy(const char *, int);
@@ -303,25 +365,5 @@ char *str_copy(const char *, int);
 char *str_prepend(char *, char, int);
 
 char *str_slice(char *, int, int);
-
-char *str_rpad(char *, int, char, int);
-
-char *str_to_val(t_bistromathique, const char *, int);
-
-char *val_to_str(t_bistromathique, char *, int);
-
-/*
- * parsing_helpers.c
- */
-
-int is_priority_operator(t_bistromathique, char);
-
-int is_operator(t_bistromathique, char);
-
-/*
- * eval_expr.c
- */
-
-char *eval_expr(char *, char *, char *, unsigned int);
 
 #endif /* !_BISTROMATHIQUE_H_ */

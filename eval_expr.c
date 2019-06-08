@@ -141,7 +141,7 @@ char *eval_expr(char *base, char *ops, char *expr, unsigned int size)
         free_expression(&expression_root);
         return NULL;
     }
-    value = val_to_str(bistromathique, result->value, result->size);
+    value = number_to_string(bistromathique, result->value, result->size);
     if (result->sign == SIGN_NEG)
         value = str_prepend(value, bistromathique.ops[OP_NEG_IDX], result->size);
     free_expression(&expression_root);

@@ -19,13 +19,11 @@ void free_expression(t_expression_tree **expression_node)
         if ((*expression_node)->first != NULL)
         {
             free_expression(&(*expression_node)->first);
-            free((*expression_node)->first);
             (*expression_node)->first = NULL;
         }
         if ((*expression_node)->second != NULL)
         {
             free_expression(&(*expression_node)->second);
-            free((*expression_node)->second);
             (*expression_node)->second = NULL;
         }
         free(*expression_node);
@@ -47,7 +45,7 @@ void update_root_expression(t_bistromathique bistromathique, t_expression_tree *
         *root = new_expression_node;
     }
     else if (is_priority_operator(bistromathique, new_expression_node->operator) &&
-             new_expression_node->level >= (*root)->level)
+             !is_priority_operator(bistromathique, (*root)->operator) && new_expression_node->level >= (*root)->level)
     {
         free_expression(&new_expression_node->first);
         new_expression_node->first = (*root)->second;

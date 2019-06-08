@@ -60,22 +60,3 @@ int my_atoi(char *value)
         result = -result;
     return result;
 }
-
-/**
- * Retrieves the decimal value of a character in the base of bistromathique.
- * @param bistromathique: The bistromathique structure.
- * @param value: The character to process.
- * @return: The decimal value corresponding to the character in the base of bistromathique.
- */
-int get_value(t_bistromathique bistromathique, char value)
-{
-    int index = 0;
-
-    while (bistromathique.base[index] != '\0')
-    {
-        if (bistromathique.base[index] == value)
-            return index;
-        index += 1;
-    }
-    return -1;
-}
