@@ -39,7 +39,7 @@ static int retrieve_expression(t_bistromathique bistromathique, t_expression_sta
     if (bistromathique.expr[index] == bistromathique.ops[OP_OPEN_PARENT_IDX])
     {
         expression_level += 1;
-        if (create_sub_expression(expression_stack, expression_level) == -1)
+        if (create_sub_expression(bistromathique, expression_stack, index, expression_level) == -1)
             return -1;
     }
     else if (bistromathique.expr[index] == bistromathique.ops[OP_CLOSE_PARENT_IDX])
@@ -69,7 +69,7 @@ static t_expression_tree *parse_expr(t_bistromathique bistromathique)
     int expression_level = 0;
     int index = 0;
 
-    if (create_sub_expression(&expression_stack, expression_level) == -1)
+    if (create_sub_expression(bistromathique, &expression_stack, -1, expression_level) == -1)
         return NULL;
     while (index < bistromathique.size)
     {

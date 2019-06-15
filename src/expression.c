@@ -65,7 +65,7 @@ void update_root_expression(t_bistromathique bistromathique, t_expression_tree *
  * @param position: The position of an operator in the arithmetic expression.
  * @return: The expression containing the right value of the expression.
  */
-static t_expression_tree *parse_right_value(t_bistromathique bistromathique, int position)
+t_expression_tree *parse_right_value(t_bistromathique bistromathique, int position)
 {
     t_expression_tree *right_expression = NULL;
     int i = position + 1;

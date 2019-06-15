@@ -57,7 +57,10 @@ int merge_expressions(t_expression_stack **expression_stack)
         return -1;
     }
     if (super_expression->expression_root->first == NULL || super_expression->expression_root->second == NULL)
+    {
+        free_expression(&super_expression->expression_root);
         super_expression->expression_root = (*expression_stack)->expression_root;
+    }
     else
     {
         expression_tmp = super_expression->expression_root;
@@ -96,22 +99,28 @@ static int add_expression_to_stack(t_expression_stack **expression_stack, t_expr
  * Initializes an expression tree and adds it to an expression stack.
  * @param expression_stack: The stack of expressions.
  * @param expression_level: The current parenthesis level in the expression.
+ * @param position: The current position in the expression.
+ * @param expression_level: The current parenthesis level in the expression.
  * @return: A negative value if an error occurs. Zero if the creation completes successfully.
  */
-int create_sub_expression(t_expression_stack **expression_stack, int expression_level)
+int create_sub_expression(t_bistromathique bistromathique, t_expression_stack **expression_stack, int position,
+                          int expression_level)
 {
     t_expression_tree *expression_root = NULL;
 
-    if ((expression_root = malloc(sizeof(*expression_root))) == NULL)
+    if ((expression_root = expression_has_no_operator(bistromathique, position, expression_level)) == NULL)
     {
-        my_putstr(MALLOC_ERROR);
-        return -1;
+        if ((expression_root = malloc(sizeof(*expression_root))) == NULL)
+        {
+            my_putstr(MALLOC_ERROR);
+            return -1;
+        }
+        expression_root->first = NULL;
+        expression_root->second = NULL;
+        expression_root->operator = 0;
+        expression_root->level = expression_level;
+        expression_root->result = NULL;
     }
-    expression_root->first = NULL;
-    expression_root->second = NULL;
-    expression_root->operator = 0;
-    expression_root->level = expression_level;
-    expression_root->result = NULL;
     if (add_expression_to_stack(expression_stack, expression_root) == -1)
     {
         free_number(expression_root->result);

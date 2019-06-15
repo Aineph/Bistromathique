@@ -5,4 +5,4 @@ set(CMAKE_C_STANDARD 99)
 
 include_directories(include)
 
-add_executable(Bistromathique main.c common.c eval_expr.c compute.c expression.c common_checks.c expression_stack.c operation_map.c infinite_add.c common_numbers.c infinite_sub.c number.c infinite_mul.c common_strings.c infinite_div.c infinite_mod.c common_multiply.c common_divide.c)
+add_executable(Bistromathique src/main.c src/common.c src/eval_expr.c src/compute.c src/expression.c src/common_checks.c src/expression_stack.c src/operation_map.c src/infinite_add.c src/common_numbers.c src/infinite_sub.c src/number.c src/infinite_mul.c src/common_strings.c src/infinite_div.c src/infinite_mod.c src/common_multiply.c src/common_divide.c src/common_expression.c)

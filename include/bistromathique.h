@@ -224,6 +224,8 @@ char *eval_expr(char *, char *, char *, unsigned int);
 
 void free_expression(t_expression_tree **);
 
+t_expression_tree *parse_right_value(t_bistromathique, int);
+
 void update_root_expression(t_bistromathique, t_expression_tree **, t_expression_tree *);
 
 t_expression_tree *create_expression(t_bistromathique, int, int);
@@ -238,7 +240,7 @@ int empty_expression_stack(t_expression_stack **);
 
 int merge_expressions(t_expression_stack **);
 
-int create_sub_expression(t_expression_stack **, int);
+int create_sub_expression(t_bistromathique, t_expression_stack **, int, int);
 
 /*
  * operation_list.c
@@ -283,8 +285,6 @@ t_number *infinite_sub(t_bistromathique, t_number *, t_number *);
 /*
  * infinite_mul.c
  */
-
-t_number *simple_mul(t_bistromathique, t_number *, t_number *);
 
 t_number *infinite_mul(t_bistromathique, t_number *, t_number *);
 
@@ -335,6 +335,12 @@ void rollback(t_division *, int);
 int multiply_and_subtract(t_bistromathique, t_division *, int);
 
 t_number *one_digit_multiply(t_bistromathique, t_number *, int);
+
+/*
+ * common_expression.c
+ */
+
+t_expression_tree *expression_has_no_operator(t_bistromathique, int, int);
 
 /*
  * common_multiply.c
