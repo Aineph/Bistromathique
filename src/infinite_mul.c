@@ -142,7 +142,7 @@ t_number *infinite_mul(t_bistromathique bistromathique, t_number *nb_a, t_number
 
     if ((multiplication = create_multiplication(bistromathique, nb_a, nb_b)) == NULL)
         return NULL;
-    if (nb_a->size + nb_b->size < 140 || (nb_a->size < 2 || nb_b->size < 2))
+    if (nb_a->size + nb_b->size < 120 || (nb_a->size < 30 || nb_b->size < 30))
         perform_multiplication(multiplication, nb_a, nb_b);
     else if (process_multiplication(bistromathique, multiplication) == -1)
     {
