@@ -9,7 +9,7 @@ This version of Bistromathique contains the following operations:
 * Infinite division
 * Infinite modulo
 
-## Build system
+## Build System
 
 The project uses CMake in order to compile. The minimum version required is 3.12.
 You can download it there: https://cmake.org/download/.
@@ -60,7 +60,7 @@ $> ./Bistromathique "0123456789ABCDEF" "()+-*/%" 42
 
 You can change every digits in order to create your own base of computation.
 
-#### The operators
+#### The Operators
 
 The list of operators has a fixed size.
 Thus you will necessarily have to provide the 7 mandatory operators the program needs in order to run it.
@@ -82,7 +82,7 @@ $> ./Bistromathique "0123456789" "()+-*/%" 42
 $> ./Bistromathique "0123456789" "[]+-x:R" 42
 ```
 
-#### The size
+#### The Size
 
 You also have to provide the size of the arithmetic expression.
 If you use the program using the "echo", then you should give the exact number of characters you entered.
