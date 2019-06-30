@@ -136,6 +136,7 @@ t_number *infinite_sub(t_bistromathique bistromathique, t_number *nb_a, t_number
     {
         subtraction->nb_b->sign = SIGN_NEG;
         subtraction->result = infinite_add(bistromathique, subtraction->nb_b, subtraction->nb_a);
+        subtraction->result->sign = SIGN_NEG;
     }
     else if (nb_a->sign != nb_b->sign && nb_a->sign == SIGN_POS)
     {
