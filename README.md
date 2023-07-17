@@ -2,7 +2,7 @@
 
 This is the first big assignment at Epitech. Its purpose is to calculate numbers with infinite digits.
 
-![Bistromathique Illustration](https://res.cloudinary.com/deexzd1vz/image/upload/v1689606081/bistromathique_imr4ny.jpg "Bistromathique Illustration")
+![Bistromathique Illustration](https://res.cloudinary.com/deexzd1vz/image/upload/v1689606081/bistromathique_imr4ny.jpg)
 
 This version of Bistromathique contains the following operations:
 
